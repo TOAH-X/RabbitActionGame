@@ -699,6 +699,8 @@ public class Player : MonoBehaviour
     {
         //W“GŒø‰Ê
         Vacuum(this.transform.position, new Vector2(10, 10), 0.5f);
+        //UŒ‚
+        AttackMaker((int)(attack * 4.5f), 3, attentionDamage, attentionRate, this.transform.position, new Vector2(10.0f, 10.0f), 0);
 
         yield break;
     }
