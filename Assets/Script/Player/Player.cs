@@ -30,8 +30,8 @@ public class Player : MonoBehaviour
 
     [SerializeField] TeamCoutnroller teamCoutnrollerScript;     //TeamCoutnrollerのスクリプト
 
-    [SerializeField] int invincibilityTimer = 0;                //無敵時間管理
-    [SerializeField] int dashTimer = 0;                         //ダッシュ時間管理(3回以上連続でダッシュさせない)
+    [SerializeField] float invincibilityTimer = 0;              //無敵時間管理
+    [SerializeField] float dashTimer = 0;                       //ダッシュ時間管理(3回以上連続でダッシュさせない)
 
     [Header("キャラID")]
     [SerializeField] int charId = 1;                            //キャラクターのID
@@ -197,12 +197,12 @@ public class Player : MonoBehaviour
         //無敵時間
         if (invincibilityTimer > 0)
         {
-            invincibilityTimer--;
+            invincibilityTimer -= Time.deltaTime;
         }
         //ダッシュ可能時間
         if (dashTimer > 0)
         {
-            dashTimer--;
+            dashTimer -= Time.deltaTime;
         }
 
         
@@ -385,7 +385,7 @@ public class Player : MonoBehaviour
             //スタミナ消費
             ExhaustStamina(10);
             //ダッシュ可能時間の更新
-            dashTimer = 60;
+            dashTimer = 1;
 
             if (isLookRight == true)
             {
@@ -773,7 +773,7 @@ public class Player : MonoBehaviour
             Debug.Log("CurrentHP" + currentHp);
 
             //無敵時間の更新
-            invincibilityTimer = 30;
+            invincibilityTimer = 0.5f;
         }
     }
 
