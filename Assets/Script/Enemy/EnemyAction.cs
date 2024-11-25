@@ -139,8 +139,6 @@ public class EnemyAction : MonoBehaviour
         enemyHpNotationPrefab.transform.position = this.transform.position + new Vector3(0, 0.75f, 0);
     }
 
-
-
     //“G‚ÌˆÚ“®
     IEnumerator EnemyMove()
     {
@@ -174,7 +172,6 @@ public class EnemyAction : MonoBehaviour
             {
                 rb2D.velocity = new Vector2(enemyMoveSpeed, GetComponent<Rigidbody2D>().velocity.y);
             }
-
         }
         else
         {

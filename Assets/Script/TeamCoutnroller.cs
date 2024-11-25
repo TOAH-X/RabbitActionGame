@@ -64,7 +64,7 @@ public class TeamCoutnroller : MonoBehaviour
         GetPlayerData(currentChar);
         SetPlayerData(0);
 
-        playerScript.CharChange(teamIdData[0]);
+        playerScript.CharChange(teamIdData[0]);                                 //プレイヤースクリプトにキャラ変更した情報を渡す
     }
 
     // Update is called once per frame
@@ -164,7 +164,7 @@ public class TeamCoutnroller : MonoBehaviour
             
             SetPlayerData(updateCharId);
 
-            playerScript.CharChange(teamIdData[updateCharId]);
+            playerScript.CharChange(teamIdData[updateCharId]);                  //プレイヤースクリプトにキャラ変更した情報を渡す
 
             currentChar = updateCharId;
         }

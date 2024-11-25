@@ -175,10 +175,16 @@ public class Player : MonoBehaviour
                 NormalAttack(attack, normalAttackAttribute);           //UŒ‚—ÍˆË‘¶
 
                 //•KE‹Z
-                SpecialMove();
+                if (Input.GetKeyDown(KeyCode.Q)) 
+                {
+                    SpecialMove();
+                }
 
                 //ƒXƒLƒ‹
-                Skill();
+                if (Input.GetKeyDown(KeyCode.E)) 
+                {
+                    Skill();
+                }
             }
         }
 
@@ -314,14 +320,14 @@ public class Player : MonoBehaviour
         Vector3 playerScale = this.transform.localScale;
 
         //ƒXƒ^ƒ~ƒiƒQ[ƒW‚ğ”½“]‚³‚¹‚È‚¢
-        Transform staminaGaugeBaseTransform = this.transform.Find("StaminaGaugeBase");
-        Vector3 staminaGaugeBaseScale = staminaGaugeBaseTransform.localScale;
+        //Transform staminaGaugeBaseTransform = this.transform.Find("StaminaGaugeBase");
+        //Vector3 staminaGaugeBaseScale = staminaGaugeBaseTransform.localScale;
 
         //‰EŒü‚«
         if (isLookRight == true)
         {
             playerScale.x = 1 * Mathf.Abs(playerScale.x);
-            staminaGaugeBaseScale.x = 1 * Mathf.Abs(staminaGaugeBaseScale.x);
+            //staminaGaugeBaseScale.x = 1 * Mathf.Abs(staminaGaugeBaseScale.x);
             //‹t‘¤‚ÉˆÚ“®‚µ‚Ä‚¢‚½ê‡‚Í~‚Ü‚é
             if (rb2D.velocity.x < 0)
             {
@@ -332,7 +338,7 @@ public class Player : MonoBehaviour
         else
         {
             playerScale.x = -1 * Mathf.Abs(playerScale.x);
-            staminaGaugeBaseScale.x = -1 * Mathf.Abs(staminaGaugeBaseScale.x);
+            //staminaGaugeBaseScale.x = -1 * Mathf.Abs(staminaGaugeBaseScale.x);
             //‹t‘¤‚ÉˆÚ“®‚µ‚Ä‚¢‚½ê‡‚Í~‚Ü‚é
             if (rb2D.velocity.x > 0)
             {
@@ -340,7 +346,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        staminaGaugeBaseTransform.localScale = staminaGaugeBaseScale;
+        //staminaGaugeBaseTransform.localScale = staminaGaugeBaseScale;
         this.transform.localScale = playerScale;
     }
 
@@ -557,9 +563,9 @@ public class Player : MonoBehaviour
     }
 
     //•KE‹Z
-    private void SpecialMove()
+    public void SpecialMove()
     {
-        if (Input.GetKeyDown(KeyCode.Q) && currentSpecialMoveRecharge <= 0)
+        if (currentSpecialMoveRecharge <= 0)
         {
             currentSpecialMoveRecharge = maxSpecialMoveRecharge;
 
@@ -642,9 +648,9 @@ public class Player : MonoBehaviour
     }
 
     //ƒXƒLƒ‹
-    private void Skill()
+    public void Skill()
     {
-        if (Input.GetKeyDown(KeyCode.E) && currentSkillRecharge <= 0)  
+        if (currentSkillRecharge <= 0)  
         {
             currentSkillRecharge = maxSkillRecharge;
 
