@@ -58,17 +58,23 @@ public class PlayerSummonObjects : MonoBehaviour
         summonAttentionRate = attentionRate;
 
         //キャラID3用の処理
-        char3();
-        
+        if (summonCharId == 3) 
+        {
+            char3();
+        }
+        //キャラID3用の処理
+        if (summonCharId == 4)
+        {
+            char4();
+        }
+
     }
 
     //攻撃
-    public void Attack() 
+    //攻撃力、座標、サイズ
+    public void Attack(int attack, Vector2 attackRangePosition, Vector2 attackRangeSize)
     {
-        //
-        Vector2 attackRangePosition = this.transform.position;              //攻撃位置仮
-        Vector2 attackRangeSize = this.transform.localScale * 10;            //攻撃範囲仮
-        playerScript.AttackMaker(summonAttack, summonAttribute, summonAttentionDamage, summonAttentionRate, attackRangePosition, attackRangeSize, summonKnockBackValue);
+        playerScript.AttackMaker(attack, summonAttribute, summonAttentionDamage, summonAttentionRate, attackRangePosition, attackRangeSize, summonKnockBackValue);
     }
 
     //回復
@@ -84,20 +90,45 @@ public class PlayerSummonObjects : MonoBehaviour
     {
         StartCoroutine(char3skill());
     }
+    //キャラID4のスキル(後で消すこと)
+    public void char4()
+    {
+        //仮置きで太陽らしい色にしている
+        this.GetComponent<SpriteRenderer>().color = new Color32(200, 50, 50, 60);
+        StartCoroutine(char4skill());
+    }
 
     //キャラID3のスキルtimedeltatimeに書き換えること
     IEnumerator char3skill() 
     {
+        float timer = 0;
         for (int i = 0; i < 20; i++) 
         {
-            Attack();
+            Attack((int)(summonAttack * 2.4f), this.transform.position, this.transform.localScale * 10);
             Heal((float)summonHp * 0.05f);
-            for(int j = 0; j < 30; j++) 
-            { 
+            while (timer <= 0.5f) 
+            {
                 yield return null;
+                timer += Time.deltaTime;
             }
+            timer = 0;
         }
-
+        yield break;
+    }
+    //キャラID4のスキルtimedeltatimeに書き換えること
+    IEnumerator char4skill()
+    {
+        float timer = 0;
+        for (int i = 0; i < 25; i++)
+        {
+            Attack((int)(summonAttack * 0.75f), this.transform.position, this.transform.localScale * 1);
+            while (timer <= 0.4f)
+            {
+                yield return null;
+                timer += Time.deltaTime;
+            }
+            timer = 0;
+        }
         yield break;
     }
 }

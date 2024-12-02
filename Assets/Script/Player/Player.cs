@@ -444,11 +444,11 @@ public class Player : MonoBehaviour
         isHookShotMoving = true;
 
         //向きの変更
-        if (distance.y > 0)
+        if (distance.x > 0)
         {
             Direction(true);
         }
-        else if (distance.y < 0)
+        else
         {
             Direction(false);
         }
@@ -531,13 +531,10 @@ public class Player : MonoBehaviour
     }
 
     //プレイヤーの召喚物(設置スキル)
-    public void PlayerSummonObjects() 
+    //継続時間(summonDuration)、ノックバック量、生成位置、サイズ
+    public void PlayerSummonObjects(float summonDuration, float summonKnockBackValue, Vector2 playerSummonObjsPos, Vector2 playerSummonObjsSize)
     {
-        Vector2 playerSummonObjsPos = this.transform.position;
-        Vector2 playerSummonObjsSize = new Vector2(0.5f, 0.5f);
-        float summonDuration = 10.0f;
-        float summonKnockBackValue = 0;
-        //吸い込み
+        //設置
         var playerSummonObjs = Instantiate(playerSummonObjects, playerSummonObjsPos, this.transform.rotation);
         playerSummonObjs.transform.localScale = new Vector3(playerSummonObjsSize.x, playerSummonObjsSize.y, 1.0f);
         PlayerSummonObjects playerSummonObjectsScript = playerSummonObjs.GetComponent<PlayerSummonObjects>();
@@ -573,13 +570,17 @@ public class Player : MonoBehaviour
             {
                 StartCoroutine(Char1SpecialMove());
             }
-            if (charId == 2)
+            else if (charId == 2)
             {
                 StartCoroutine(Char2SpecialMove());
             }
-            if (charId == 3)
+            else if (charId == 3)
             {
                 StartCoroutine(Char3SpecialMove());
+            }
+            else if (charId == 4)
+            {
+                StartCoroutine(Char4SpecialMove());
             }
         }
     }
@@ -642,7 +643,15 @@ public class Player : MonoBehaviour
     //キャラIDが3のキャラの必殺技
     IEnumerator Char3SpecialMove()
     {
-        PlayerSummonObjects();
+        PlayerSummonObjects(10, 0, this.transform.position, new Vector2(0.5f, 0.5f));
+
+        yield break;
+    }
+
+    //キャラIDが4のキャラの必殺技
+    IEnumerator Char4SpecialMove()
+    {
+        PlayerSummonObjects(10, 0, this.transform.position, new Vector2(15.0f, 15.0f));
 
         yield break;
     }
@@ -658,13 +667,17 @@ public class Player : MonoBehaviour
             {
                 StartCoroutine(Char1Skill());
             }
-            if (charId == 2)
+            else if (charId == 2)
             {
                 StartCoroutine(Char2Skill());
             }
-            if (charId == 3)
+            else if (charId == 3)
             {
                 StartCoroutine(Char3Skill());
+            }
+            else if (charId == 4)
+            {
+                StartCoroutine(Char4Skill());
             }
         }
     }
@@ -711,6 +724,17 @@ public class Player : MonoBehaviour
         yield break;
     }
 
+    //キャラIDが4のキャラのスキル
+    IEnumerator Char4Skill()
+    {
+        //集敵効果
+        Vacuum(this.transform.position, new Vector2(10, 10), 0.5f);
+        //攻撃
+        AttackMaker((int)(attack * 4.5f), 3, attentionDamage, attentionRate, this.transform.position, new Vector2(10.0f, 10.0f), 0);
+
+        yield break;
+    }
+
     //特性
     private void Characteristic()
     {
@@ -718,13 +742,17 @@ public class Player : MonoBehaviour
         {
             //StartCoroutine(Char1Characteristic());
         }
-        if (charId == 2)
+        else if (charId == 2)
         {
             StartCoroutine(Char2Characteristic());
         }
-        if (charId == 3)
+        else if (charId == 3)
         {
             StartCoroutine(Char3Characteristic());
+        }
+        else if (charId == 4)
+        {
+            StartCoroutine(Char4Characteristic());
         }
     }
 
@@ -758,6 +786,13 @@ public class Player : MonoBehaviour
         yield break;
     }
 
+    //キャラIDが4のキャラの特性
+    IEnumerator Char4Characteristic()
+    {
+
+
+        yield break;
+    }
 
     //被ダメージ
     public void Damage(int damage, int enemyAttribute)

@@ -33,11 +33,12 @@ public class TeamCoutnroller : MonoBehaviour
         {
             teamIdData = new int[3];
         }
-        //キャラデータを仮に代入
+        //チームデータを仮に代入
         for (int i = 0; i < 3; i++) 
         {
             teamIdData[i] = i + 1;
         }
+        teamIdData[2] = 4;
 
         //配列の初期化(エラー対策)
         if (teamCurrentHpData == null || teamCurrentHpData.Length < 3)
