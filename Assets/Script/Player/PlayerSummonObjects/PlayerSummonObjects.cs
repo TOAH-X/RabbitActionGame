@@ -60,12 +60,12 @@ public class PlayerSummonObjects : MonoBehaviour
         //キャラID3用の処理
         if (summonCharId == 3) 
         {
-            char3();
+            Char3();
         }
         //キャラID3用の処理
         if (summonCharId == 4)
         {
-            char4();
+            Char4();
         }
 
     }
@@ -86,20 +86,20 @@ public class PlayerSummonObjects : MonoBehaviour
 
     //以降キャラごとの処理
     //キャラID3のスキル(後で消すこと)
-    public void char3() 
+    public void Char3() 
     {
-        StartCoroutine(char3skill());
+        StartCoroutine(Char3skill());
     }
     //キャラID4のスキル(後で消すこと)
-    public void char4()
+    public void Char4()
     {
         //仮置きで太陽らしい色にしている
         this.GetComponent<SpriteRenderer>().color = new Color32(200, 50, 50, 60);
-        StartCoroutine(char4skill());
+        StartCoroutine(Char4skill());
     }
 
     //キャラID3のスキルtimedeltatimeに書き換えること
-    IEnumerator char3skill() 
+    IEnumerator Char3skill() 
     {
         float timer = 0;
         for (int i = 0; i < 20; i++) 
@@ -116,7 +116,7 @@ public class PlayerSummonObjects : MonoBehaviour
         yield break;
     }
     //キャラID4のスキルtimedeltatimeに書き換えること
-    IEnumerator char4skill()
+    IEnumerator Char4skill()
     {
         float timer = 0;
         for (int i = 0; i < 25; i++)

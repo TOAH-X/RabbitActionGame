@@ -212,8 +212,6 @@ public class Player : MonoBehaviour
             dashTimer -= Time.deltaTime;
         }
 
-        
-
         //スキルクールタイム
         if (currentSkillRecharge > 0)
         {
@@ -583,6 +581,10 @@ public class Player : MonoBehaviour
             {
                 StartCoroutine(Char4SpecialMove());
             }
+            else if (charId == 5)
+            {
+                StartCoroutine(Char5SpecialMove());
+            }
         }
     }
 
@@ -657,6 +659,13 @@ public class Player : MonoBehaviour
         yield break;
     }
 
+    //キャラIDが5のキャラの必殺技
+    IEnumerator Char5SpecialMove()
+    {
+        
+        yield break;
+    }
+
     //スキル
     public void Skill()
     {
@@ -679,6 +688,10 @@ public class Player : MonoBehaviour
             else if (charId == 4)
             {
                 StartCoroutine(Char4Skill());
+            }
+            else if (charId == 5)
+            {
+                StartCoroutine(Char5Skill());
             }
         }
     }
@@ -736,6 +749,13 @@ public class Player : MonoBehaviour
         yield break;
     }
 
+    //キャラIDが5のキャラのスキル
+    IEnumerator Char5Skill()
+    {
+        
+        yield break;
+    }
+
     //特性
     private void Characteristic()
     {
@@ -757,6 +777,10 @@ public class Player : MonoBehaviour
         if (teamId.Contains(4))  //控えから発動可能
         {
             StartCoroutine(Char4Characteristic());
+        }
+        else if (charId == 5)
+        {
+            StartCoroutine(Char3Characteristic());
         }
     }
 
@@ -807,6 +831,14 @@ public class Player : MonoBehaviour
         {
             damageBuff *= 1.2f;
         }
+
+        yield break;
+    }
+
+    //キャラIDが5のキャラの特性
+    IEnumerator Char5Characteristic()
+    {
+
 
         yield break;
     }
