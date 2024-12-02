@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -738,6 +739,9 @@ public class Player : MonoBehaviour
     //“Á«
     private void Characteristic()
     {
+        //ƒ`[ƒ€ƒLƒƒƒ‰‚Ì”cˆ¬
+        int[] teamId = { teamCoutnrollerScript.TeamIdData[0], teamCoutnrollerScript.TeamIdData[1], teamCoutnrollerScript.TeamIdData[2] };
+
         if (charId == 1)
         {
             //StartCoroutine(Char1Characteristic());
@@ -750,7 +754,7 @@ public class Player : MonoBehaviour
         {
             StartCoroutine(Char3Characteristic());
         }
-        else if (charId == 4)
+        if (teamId.Contains(4))  //T‚¦‚©‚ç”­“®‰Â”\
         {
             StartCoroutine(Char4Characteristic());
         }
@@ -789,7 +793,20 @@ public class Player : MonoBehaviour
     //ƒLƒƒƒ‰ID‚ª4‚ÌƒLƒƒƒ‰‚Ì“Á«
     IEnumerator Char4Characteristic()
     {
-
+        //T‚¦‚©‚ç‚Å‚àŒp‘±‚³‚¹‚é‚±‚Æ
+        int tA1 = dB_charData.charData[teamCoutnrollerScript.TeamIdData[0]].attribute;
+        int tA2 = dB_charData.charData[teamCoutnrollerScript.TeamIdData[1]].attribute;
+        int tA3 = dB_charData.charData[teamCoutnrollerScript.TeamIdData[2]].attribute;
+        //3‘®«ˆÙ‚È‚é
+        if (tA1 != tA2 && tA2 != tA3 && tA3 != tA1)
+        {
+            damageBuff *= 1.4f;
+        }
+        //2‘®«ˆÙ‚È‚é
+        else if ((tA1 == tA2 && tA2 == tA3 && tA3 == tA1) == false) 
+        {
+            damageBuff *= 1.2f;
+        }
 
         yield break;
     }

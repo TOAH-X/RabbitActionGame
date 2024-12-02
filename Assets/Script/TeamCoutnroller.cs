@@ -204,4 +204,12 @@ public class TeamCoutnroller : MonoBehaviour
         get { return teamCurrentHpData; }  // 通称ゲッター。呼び出した側がscoreを参照できる
         set { teamCurrentHpData = value; } // 通称セッター。value はセットする側の数字などを反映する
     }
+
+    //teamIdData参照用(getset)
+
+    public int[] TeamIdData // プロパティ
+    {
+        get { return teamIdData; }  // 通称ゲッター。呼び出した側がscoreを参照できる
+        set { teamIdData = value; } // 通称セッター。value はセットする側の数字などを反映する
+    }
 }
