@@ -163,6 +163,9 @@ public class Player : MonoBehaviour
             //特殊移動(フックショット)...一部キャラの特殊移動？スキルにする予定
             HookShot();
 
+            //通常攻撃
+            NormalAttack(attack, normalAttackAttribute);           //攻撃力依存
+
             //Rayの判定(地上にいるとき)
             if (IsGrounding() == true)
             {
@@ -171,26 +174,22 @@ public class Player : MonoBehaviour
 
                 //ダッシュ
                 Dash();
-
-                //通常攻撃
-                NormalAttack(attack, normalAttackAttribute);           //攻撃力依存
-
-                //必殺技
-                if (Input.GetKeyDown(KeyCode.Q)) 
-                {
-                    SpecialMove();
-                }
-
-                //スキル
-                if (Input.GetKeyDown(KeyCode.E)) 
-                {
-                    Skill();
-                }
             }
         }
 
         //特性
         Characteristic();
+
+        //必殺技
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            SpecialMove();
+        }
+        //スキル
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Skill();
+        }
 
         //死亡時
         if (CurrentHp == 0)
@@ -561,7 +560,7 @@ public class Player : MonoBehaviour
     //必殺技
     public void SpecialMove()
     {
-        if (currentSpecialMoveRecharge <= 0)
+        if (currentSpecialMoveRecharge <= 0 && isHookShotMoving == false) 
         {
             currentSpecialMoveRecharge = maxSpecialMoveRecharge;
 
@@ -669,7 +668,7 @@ public class Player : MonoBehaviour
     //スキル
     public void Skill()
     {
-        if (currentSkillRecharge <= 0)  
+        if (currentSkillRecharge <= 0 && isHookShotMoving == false)  
         {
             currentSkillRecharge = maxSkillRecharge;
 

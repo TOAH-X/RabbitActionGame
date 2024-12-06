@@ -13,6 +13,8 @@ public class DamageNotation : MonoBehaviour
     {
         //©g‚ÌF‚Ìæ“¾
         thisText = this.GetComponent<Text>();
+        //d‚È‚é‚±‚Æ‚ğ–h‚®‚½‚ß
+        this.transform.position += new Vector3(Random.Range(-1.0f, 1.0f) * 0.1f, Random.Range(-1.0f, 1.0f) * 0.1f);
     }
 
     // Update is called once per frame
