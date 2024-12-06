@@ -38,7 +38,7 @@ public class TeamCoutnroller : MonoBehaviour
         {
             teamIdData[i] = i + 1;
         }
-        teamIdData[2] = 4;
+        teamIdData[2] = 3;
 
         //配列の初期化(エラー対策)
         if (teamCurrentHpData == null || teamCurrentHpData.Length < 3)
@@ -138,6 +138,8 @@ public class TeamCoutnroller : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
+        //クールタイム関係
+        TeamCharRecharge();
     }
 
     //キャラ変更
@@ -168,6 +170,37 @@ public class TeamCoutnroller : MonoBehaviour
             playerScript.CharChange(teamIdData[updateCharId]);                  //プレイヤースクリプトにキャラ変更した情報を渡す
 
             currentChar = updateCharId;
+        }
+    }
+
+    //クールタイム関係(裏キャラ専用。表のキャラ除外(PlaeryScriptで管理しているため))
+    public void TeamCharRecharge() 
+    {
+        for(int i = 0; i < 3; i++) 
+        {
+            if (teamIdData[i] == charId || teamIdData[i] != -1)  //単騎などでチームで欠落しているキャラがいた場合(現状欠員はキャラID-1扱い？) 
+            {
+                //スキルクールタイム
+                if (teamCurrentSkillRechargeData[i] > 0)
+                {
+                    teamCurrentSkillRechargeData[i] -= Time.deltaTime;
+                }
+                //スキルクールタイム0未満対処
+                if (teamCurrentSkillRechargeData[i] < 0)
+                {
+                    teamCurrentSkillRechargeData[i] = 0;
+                }
+                //必殺技クールタイム
+                if (teamCurrentSpecialMoveRechargeData[i] > 0)
+                {
+                    teamCurrentSpecialMoveRechargeData[i] -= Time.deltaTime;
+                }
+                //必殺技クールタイム0未満対処
+                if (teamCurrentSpecialMoveRechargeData[i] < 0)
+                {
+                    teamCurrentSpecialMoveRechargeData[i] = 0;
+                }
+            }
         }
     }
 

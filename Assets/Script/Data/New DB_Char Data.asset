@@ -121,3 +121,21 @@ MonoBehaviour:
     maxSpecialMoveEnergy: 0
     maxSpecialMoveRecharge: 18
     baseMoveSpeed: 3
+  - charId: 6
+    charName: "\u57CE\u30F6\u5D0E\u8C4A\u6D77"
+    rarity: 4
+    attribute: 4
+    weaponType: 0
+    baseHp: 14482
+    buffHp: 0
+    baseAttack: 925
+    characteristicName: 
+    characteristicExplanation: 
+    skillName: 
+    skillExplanation: "3\u79D2\u9593\u306E\u9593\u30010.5\u79D2\u3054\u3068\u306B\u5168\u54E1\u306EHP\u3092\u56DE\u5FA9(HP5%)\u3002"
+    specialMoveName: 
+    specialMoveExplanation: "15\u79D2\u9593\u3001\u6575\u306E\u5C5E\u6027\u8010\u6027\u309220%\u4F4E\u4E0B\u3055\u305B\u308B\u30D5\u30A3\u30FC\u30EB\u30C9\u3092\u5C55\u958B\u3002\u5468\u56F2\u306B\u5CA9\u5C5E\u6027\u3067\u81EA\u8EAB\u306E\u653B\u6483\u529B\u306E1450%\u5206\u306E\u653B\u6483\u3092\u3059\u308B\u3002"
+    maxSkillRecharge: 16
+    maxSpecialMoveEnergy: 0
+    maxSpecialMoveRecharge: 20
+    baseMoveSpeed: 3

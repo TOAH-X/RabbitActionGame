@@ -797,7 +797,7 @@ public class Player : MonoBehaviour
     IEnumerator Char2Characteristic()
     {
         //HP‚ª”¼•ªˆÈ‰º‚Ì‚Æ‚«UŒ‚—Í2”{
-        if (currentHp <= maxHp / 2)
+        if (currentHp <= Mathf.Ceil((float)maxHp / 2)) 
         {
             //ƒ_ƒ[ƒW2”{
             damageBuff *= 2.0f;
