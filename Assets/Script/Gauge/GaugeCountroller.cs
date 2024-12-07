@@ -127,7 +127,6 @@ public class GaugeCountroller : MonoBehaviour
             //this.transform.localPosition = new Vector3((gageLength * currentValue / maxValue) * 0.5f -0.5f, 0, 0);
         }
 
-
         //HP(ゲージの値)の更新
         if (thisObjName == "HPGaugeMain") 
         {

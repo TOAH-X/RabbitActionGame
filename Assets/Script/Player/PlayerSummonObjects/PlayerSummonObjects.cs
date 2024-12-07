@@ -35,7 +35,6 @@ public class PlayerSummonObjects : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
-
     }
 
     //召喚された時(情報の受け取りなど)
@@ -98,7 +97,7 @@ public class PlayerSummonObjects : MonoBehaviour
         StartCoroutine(Char4skill());
     }
 
-    //キャラID3のスキルtimedeltatimeに書き換えること
+    //キャラID3のスキル
     IEnumerator Char3skill() 
     {
         float timer = 0;
@@ -115,7 +114,7 @@ public class PlayerSummonObjects : MonoBehaviour
         }
         yield break;
     }
-    //キャラID4のスキルtimedeltatimeに書き換えること
+    //キャラID4のスキル
     IEnumerator Char4skill()
     {
         float timer = 0;

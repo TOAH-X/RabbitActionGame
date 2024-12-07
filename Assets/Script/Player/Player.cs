@@ -20,6 +20,8 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject playerSummonObjects;            //プレイヤーが召喚できるオブジェクト
 
     [SerializeField] GameObject vacuumRangeObj;                 //吸い込み範囲のオブジェクト
+
+    [SerializeField] GameObject playerArrowObj;                 //矢(など遠距離用)のオブジェクト
     
     [SerializeField] List<GameObject> hookShotObjList = new List<GameObject>();     //フックショットのプレハブリスト
     [SerializeField] int hookShotObjCount = 0;                  //フックショットのカウント
@@ -140,8 +142,6 @@ public class Player : MonoBehaviour
         //FPS計測
         //float fps = 1f / Time.deltaTime;
         //Debug.Log("FPS:" + fps);
-
-
 
         //攻撃力計算
         attack = (int)Mathf.Ceil((float)((baseAttack) * attackBuff) * damageBuff);
@@ -539,6 +539,20 @@ public class Player : MonoBehaviour
         playerSummonObjectsScript.Summon(charId, summonDuration, attack, attribute, maxHp, attentionDamage, attentionRate, summonKnockBackValue);
     }
 
+    //キャラID、倍率計算後の攻撃力、属性、会心ダメージ、会心率、攻撃発生場所、攻撃範囲の大きさ(x,y)、ノックバック量(charIDが抜けているので加えること)
+    //public void AttackMaker(int multipliedAttack, int finalAttributeNormalAttack, float multipliedAttentionDamage, float multipliedAttentionRate, Vector3 attackPos, Vector2 attackSize, float knockBackValue)
+    //プレイヤーの矢(遠距離攻撃)
+    //攻撃タイプ(通常0)、継続時間(summonDuration)、ノックバック量、生成位置、サイズ
+    public void Arrow(int attackType, int multipliedAttack, int arrowAttribute, float arrowAttentionDamage, float arrowAttentionRate, Vector2 playerArrowObjsPos, Vector2 playerArrowObjsSize, float arrowKnockBackValue)
+    {
+        //設置
+        var playerArrowObjs = Instantiate(playerArrowObj, playerArrowObjsPos, this.transform.rotation);
+        playerArrowObjs.transform.localScale = new Vector3(playerArrowObjsSize.x, playerArrowObjsSize.y, 1.0f);
+        PlayerArrowObject playerArrowObjectScript = playerArrowObjs.GetComponent<PlayerArrowObject>();
+        playerArrowObjectScript.Arrow(GetComponent<Player>(), charId, attackType, multipliedAttack, arrowAttribute, arrowAttentionDamage, arrowAttentionRate, arrowKnockBackValue);
+    }
+    
+
     //通常攻撃(攻撃力,属性)
     private void NormalAttack(int attack, int attributeNormalAttack)
     {
@@ -584,10 +598,14 @@ public class Player : MonoBehaviour
             {
                 StartCoroutine(Char5SpecialMove());
             }
+            else if (charId == 6)
+            {
+                StartCoroutine(Char6SpecialMove());
+            }
         }
     }
 
-    //キャラIDが1のキャラの必殺技
+    //キャラIDが1のキャラの必殺技(timedeltatimeを使うこと)
     IEnumerator Char1SpecialMove()
     {
         for (int i = 0; i < 10; i++)
@@ -614,7 +632,7 @@ public class Player : MonoBehaviour
         yield break;
     }
 
-    //キャラIDが2のキャラの必殺技
+    //キャラIDが2のキャラの必殺技(timedeltatimeを使うこと)
     IEnumerator Char2SpecialMove()
     {
         for (int i = 0; i < 10; i++)
@@ -665,6 +683,13 @@ public class Player : MonoBehaviour
         yield break;
     }
 
+    //キャラIDが6のキャラの必殺技
+    IEnumerator Char6SpecialMove()
+    {
+
+        yield break;
+    }
+
     //スキル
     public void Skill()
     {
@@ -691,6 +716,10 @@ public class Player : MonoBehaviour
             else if (charId == 5)
             {
                 StartCoroutine(Char5Skill());
+            }
+            else if (charId == 6)
+            {
+                StartCoroutine(Char6Skill());
             }
         }
     }
@@ -740,11 +769,11 @@ public class Player : MonoBehaviour
     //キャラIDが4のキャラのスキル
     IEnumerator Char4Skill()
     {
-        //集敵効果
-        Vacuum(this.transform.position, new Vector2(10, 10), 0.5f);
-        //攻撃
-        AttackMaker((int)(attack * 4.5f), 3, attentionDamage, attentionRate, this.transform.position, new Vector2(10.0f, 10.0f), 0);
-
+        for(int i = 0; i < 9; i++) 
+        {
+            Arrow(i + 1, (int)(attack * 0.7f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), 10);
+        }
+        
         yield break;
     }
 
@@ -752,6 +781,13 @@ public class Player : MonoBehaviour
     IEnumerator Char5Skill()
     {
         
+        yield break;
+    }
+
+    //キャラIDが6のキャラのスキル
+    IEnumerator Char6Skill()
+    {
+
         yield break;
     }
 
@@ -779,7 +815,11 @@ public class Player : MonoBehaviour
         }
         else if (charId == 5)
         {
-            StartCoroutine(Char3Characteristic());
+            StartCoroutine(Char5Characteristic());
+        }
+        else if (charId == 6)
+        {
+            StartCoroutine(Char6Characteristic());
         }
     }
 
@@ -836,6 +876,14 @@ public class Player : MonoBehaviour
 
     //キャラIDが5のキャラの特性
     IEnumerator Char5Characteristic()
+    {
+
+
+        yield break;
+    }
+
+    //キャラIDが6のキャラの特性
+    IEnumerator Char6Characteristic()
     {
 
 

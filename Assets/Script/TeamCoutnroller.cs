@@ -38,7 +38,7 @@ public class TeamCoutnroller : MonoBehaviour
         {
             teamIdData[i] = i + 1;
         }
-        teamIdData[2] = 3;
+        teamIdData[2] = 4;
 
         //”z—ñ‚Ì‰Šú‰»(ƒGƒ‰[‘Îô)
         if (teamCurrentHpData == null || teamCurrentHpData.Length < 3)
