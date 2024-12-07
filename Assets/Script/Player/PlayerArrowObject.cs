@@ -13,6 +13,8 @@ public class PlayerArrowObject : MonoBehaviour
     private float arrowAttentionRate = 0;           //会心率
     private float arrowKnockBackValue = 0;          //ノックバック量
 
+    private bool isAttentionDamage = false;         //会心ダメージか
+
     private int arrowAttackType = 0;                //キャラ内の矢の種類。通常攻撃:0、その他はキャラごと
 
     private Rigidbody2D rb2d;                       //rigidbody
@@ -35,7 +37,7 @@ public class PlayerArrowObject : MonoBehaviour
     //プレイヤースクリプト、キャラID、攻撃のタイプ(通常攻撃:0、その他はキャラごとに割り当て)、キャラ倍率計算後の攻撃力、属性、会心ダメージ、会心率、攻撃発生場所、攻撃範囲の大きさ(x,y)、ノックバック量
     public void Arrow(Player player, int charId, int attackType, int attack, int attribute, float attentionDamage, float attentionRate, float knockBackValue)
     {
-        //初速、向き、重力、追従するか、範囲ダメージかを書き加えること
+        //(初速)、向き、重力、追従するか、範囲ダメージかを書き加えること
         arrowCharId = charId;
         arrowAttack = attack;
         arrowAttribute = attribute;
@@ -137,16 +139,23 @@ public class PlayerArrowObject : MonoBehaviour
             //ダメージを与える処理
             if (enemyHpScript != null)
             {
+
                 //範囲攻撃
-                Vector2 attackRangePosition = this.transform.position;
-                Vector2 attackRangeSize = new Vector2(0.5f, 0.5f);
-                playerScript.AttackMaker(arrowAttack, arrowAttribute, arrowAttentionDamage, arrowAttentionRate, attackRangePosition, attackRangeSize, arrowKnockBackValue);
+                //Vector2 attackRangePosition = this.transform.position;
+                //Vector2 attackRangeSize = new Vector2(0.5f, 0.5f);
+                //playerScript.AttackMaker(arrowAttack, arrowAttribute, arrowAttentionDamage, arrowAttentionRate, attackRangePosition, attackRangeSize, arrowKnockBackValue);
 
                 //単体直接攻撃用
-                /*
+                //会心率の抽選
+                float randomPoint = Random.value * 100;
+                if (randomPoint <= arrowAttentionRate)
+                {
+                    arrowAttack = (int)((float)(arrowAttack) * ((100 + arrowAttentionDamage) / 100));
+                    isAttentionDamage = true;
+                }
                 //攻撃したキャラのID、ダメージ判定のx座標、攻撃力、属性、会心かどうか
                 enemyHpScript.EnemyDamage(arrowCharId, this.transform.position.x, arrowAttack, arrowAttribute, isAttentionDamage, arrowKnockBackValue);
-                */
+                
 
                 //仮置き
                 ArrowDestroy();

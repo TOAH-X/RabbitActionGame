@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class NormalAttackRange : MonoBehaviour
 {
-    [SerializeField] int normalAttack = 10;                     //攻撃力
-    [SerializeField] int attackCharId;                          //攻撃者のキャラID
-    [SerializeField] bool isAttentionDamage = false;            //会心ダメージか
-    [SerializeField] bool isDestroy = false;                    //消滅してよいか
-    [SerializeField] int destroyCounter = 0;                    //消滅カウンター
-    [SerializeField] int normalAttackAttribute = 0;             //攻撃属性
-    [SerializeField] float knockBackValue;
+    private int normalAttack = 10;                              //攻撃力
+    private int attackCharId;                                   //攻撃者のキャラID
+    private bool isAttentionDamage = false;                     //会心ダメージか
+    private bool isDestroy = false;                             //消滅してよいか
+    private int destroyCounter = 0;                             //消滅カウンター
+    private int normalAttackAttribute = 0;                      //攻撃属性
+    private float knockBackValue;                               //ノックバック量
 
     // Start is called before the first frame update
     void Start()
