@@ -34,6 +34,7 @@ public class Player : MonoBehaviour
     [SerializeField] TeamCoutnroller teamCoutnrollerScript;     //TeamCoutnrollerのスクリプト
 
     [SerializeField] float invincibilityTimer = 0;              //無敵時間管理
+    [SerializeField] float invincibilityCoolTime = 0.25f;       //無敵時間
     [SerializeField] float dashTimer = 0;                       //ダッシュ時間管理(3回以上連続でダッシュさせない)
 
     [SerializeField] const float knockBackTime = 0.3f;          //ノックバックを受けた後の硬直時間
@@ -974,13 +975,14 @@ public class Player : MonoBehaviour
             //Debug.Log("CurrentHP" + currentHp);
 
             //無敵時間の更新
-            InvincibilityTimer(0.25f);
+            InvincibilityTimer(invincibilityCoolTime);
         }
     }
 
     //硬直
     public void Stun() 
     { 
+        
     } 
 
     //対消滅ダメージ(0.1秒後に発生)//Timedelattaiem使いなさい
