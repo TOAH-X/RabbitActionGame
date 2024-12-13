@@ -66,7 +66,6 @@ public class PlayerSummonObjects : MonoBehaviour
         {
             Char4();
         }
-
     }
 
     //UŒ‚
@@ -80,7 +79,7 @@ public class PlayerSummonObjects : MonoBehaviour
     public void Heal(float heal) 
     {
         float healValue = heal;
-        playerScript.Heal(healValue);
+        playerScript.Heal(false, healValue);
     }
 
     //ˆÈ~ƒLƒƒƒ‰‚²‚Æ‚Ìˆ—

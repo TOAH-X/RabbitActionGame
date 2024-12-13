@@ -38,7 +38,9 @@ public class TeamCoutnroller : MonoBehaviour
         {
             teamIdData[i] = i + 1;
         }
-        teamIdData[2] = 4;
+        teamIdData[0] = 4;
+        teamIdData[1] = 5;
+        teamIdData[2] = 6;
 
         //配列の初期化(エラー対策)
         if (teamCurrentHpData == null || teamCurrentHpData.Length < 3)
@@ -56,6 +58,7 @@ public class TeamCoutnroller : MonoBehaviour
         teamCurrentHpData[1] = playerScript.CurrentHp;
         teamCurrentHpData[2] = playerScript.CurrentHp;
 
+        
         //一人目だった場合
         currentChar = 0;
         sub1Obj.transform.localPosition = new Vector3(25f, 0, 0);
@@ -66,6 +69,7 @@ public class TeamCoutnroller : MonoBehaviour
         SetPlayerData(0);
 
         playerScript.CharChange(teamIdData[0]);                                 //プレイヤースクリプトにキャラ変更した情報を渡す
+
     }
 
     // Update is called once per frame
@@ -244,5 +248,13 @@ public class TeamCoutnroller : MonoBehaviour
     {
         get { return teamIdData; }  // 通称ゲッター。呼び出した側がscoreを参照できる
         set { teamIdData = value; } // 通称セッター。value はセットする側の数字などを反映する
+    }
+
+    //charIdData参照用(getset)
+
+    public int CharId // プロパティ
+    {
+        get { return charId; }  // 通称ゲッター。呼び出した側がscoreを参照できる
+        set { charId = value; } // 通称セッター。value はセットする側の数字などを反映する
     }
 }

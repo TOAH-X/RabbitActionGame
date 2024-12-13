@@ -9,6 +9,8 @@ public class EnemyAttackRange : MonoBehaviour
     [SerializeField] int enemyAttack = 0;                       //敵の攻撃力
     [SerializeField] int enemyAttribute = 1;                    //敵の属性
 
+    [SerializeField] EnemyAction enemyActionScript;             //スクリプト
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,12 +29,14 @@ public class EnemyAttackRange : MonoBehaviour
     }
 
     //通常攻撃
-    public void EnemyAttack(int attack,int attribute)
+    public void EnemyAttack(EnemyAction enemyAction, int attack, int attribute)
     {
         enemyAttribute = attribute;
         enemyAttack = attack;
 
         isDestroy = true;
+
+        enemyActionScript = enemyAction;
     }
 
     //プレイヤーの発見
@@ -44,9 +48,16 @@ public class EnemyAttackRange : MonoBehaviour
             //ダメージを与える処理
             if (playerScript != null)
             {
-                playerScript.Damage(enemyAttack, enemyAttribute);
+                playerScript.Damage(enemyActionScript, enemyAttack, enemyAttribute);
                 Debug.Log("NormalAttack" + enemyAttack);
             }
+
+            /* 上の処理と代替可能
+            if (other.TryGetComponent<Player>(out var playerScript))
+            {
+                playerScript.Damage(enemyAttack, enemyAttribute);
+                Debug.Log("NormalAttack" + enemyAttack);
+            }*/
         }
     }
 }

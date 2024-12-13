@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class SkillRechargeTimeCountroller : MonoBehaviour
 {
-    [SerializeField] GameObject playerObj;                          //プレイヤーオブジェクト
     [SerializeField] Player playerScript;                           //プレイヤースクリプト
     private float currentSkillRecharge = 0;                         //スキルクールタイムの残り時間
     [SerializeField] Text thisText;                                 //テキスト
@@ -14,7 +13,6 @@ public class SkillRechargeTimeCountroller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerScript = playerObj.GetComponent<Player>();
         thisText = this.GetComponent<Text>();
 
         //必殺技とスキルのクールタイムを併用する
@@ -23,40 +21,36 @@ public class SkillRechargeTimeCountroller : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
-        if (playerObj != null) 
+    {            
+        //クールタイムの取得
+        if (thisObjName == "SkillRechargeTime")
         {
-            
-            //クールタイムの取得
+            currentSkillRecharge = playerScript.CurrentSkillRecharge;
+        }
+        else if (thisObjName == "SpecialMoveRechargeTime") 
+        {
+            currentSkillRecharge = playerScript.CurrentSpecialMoveRecharge;
+        }
+
+        if (currentSkillRecharge != 0)
+        {
+            //クールタイムの表示
+            thisText.text = "" + currentSkillRecharge.ToString("n2");
+        }
+        else 
+        {
             if (thisObjName == "SkillRechargeTime")
             {
-                currentSkillRecharge = playerScript.CurrentSkillRecharge;
+                //非表示
+                thisText.text = "E";
             }
-            else if (thisObjName == "SpecialMoveRechargeTime") 
+            else if (thisObjName == "SpecialMoveRechargeTime")
             {
-                currentSkillRecharge = playerScript.CurrentSpecialMoveRecharge;
+                //非表示
+                thisText.text = "Q";
             }
-
-            if (currentSkillRecharge != 0)
-            {
-                //クールタイムの表示
-                thisText.text = "" + currentSkillRecharge.ToString("n2");
-            }
-            else 
-            {
-                if (thisObjName == "SkillRechargeTime")
-                {
-                    //非表示
-                    thisText.text = "E";
-                }
-                else if (thisObjName == "SpecialMoveRechargeTime")
-                {
-                    //非表示
-                    thisText.text = "Q";
-                }
                 
-            }
-            
         }
+            
     }
 }

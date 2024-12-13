@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
     [SerializeField] float moveSpeed = 3.0f;                    //移動速度
     [SerializeField] float baseMoveSpeed = 3.0f;                //基礎移動速度
     [SerializeField] float jumpForce = 12.0f;                   //ジャンプ力
-    [SerializeField] float dashForce = 5.0f;                    //ダッシュ力
+    [SerializeField] float dashForce = 10.0f;                   //ダッシュ力
     [SerializeField] float hookShotMoveSpeed = 0.2f;            //フックショットの移動速度
     [SerializeField] LayerMask groundLayer;                     //LayerのGround
     [SerializeField] GameObject hookShotObj;                    //フックショットのプレハブ
@@ -35,6 +35,10 @@ public class Player : MonoBehaviour
 
     [SerializeField] float invincibilityTimer = 0;              //無敵時間管理
     [SerializeField] float dashTimer = 0;                       //ダッシュ時間管理(3回以上連続でダッシュさせない)
+
+    [SerializeField] const float knockBackTime = 0.3f;          //ノックバックを受けた後の硬直時間
+    private float currentKnockBackTime = 0f;                    //現在のノックバックの硬直時間
+    private bool isStun = false;                                //硬直しているか
 
     [Header("キャラID")]
     [SerializeField] int charId = 1;                            //キャラクターのID
@@ -144,9 +148,9 @@ public class Player : MonoBehaviour
         //Debug.Log("FPS:" + fps);
 
         //攻撃力計算
-        attack = (int)Mathf.Ceil((float)((baseAttack) * attackBuff) * damageBuff);
+        attack = Mathf.CeilToInt((float)(baseAttack * attackBuff) * damageBuff);
         //HP計算
-        maxHp = (int)Mathf.Ceil((float)(baseHp) * hpBuff);
+        maxHp = Mathf.CeilToInt(baseHp * hpBuff);
         //攻撃力バフのリフレッシュ
         attackBuff = 1.0f;
         //HPバフのリフレッシュ
@@ -166,14 +170,16 @@ public class Player : MonoBehaviour
             //通常攻撃
             NormalAttack(attack, normalAttackAttribute);           //攻撃力依存
 
+            //ダッシュ
+            Dash();
+
             //Rayの判定(地上にいるとき)
             if (IsGrounding() == true)
             {
                 //ジャンプ
                 JumpUpdate();
 
-                //ダッシュ
-                Dash();
+                
             }
         }
 
@@ -181,7 +187,7 @@ public class Player : MonoBehaviour
         Characteristic();
 
         //必殺技
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q)) 
         {
             SpecialMove();
         }
@@ -388,6 +394,8 @@ public class Player : MonoBehaviour
         {
             //スタミナ消費
             ExhaustStamina(10);
+            //無敵
+            InvincibilityTimer(0.25f);
             //ダッシュ可能時間の更新
             dashTimer = 1;
 
@@ -497,21 +505,65 @@ public class Player : MonoBehaviour
     }
 
     //回復
-    public void Heal(float healValue) 
+    public void Heal(bool isTeamHeal, float healValue) 
     {
-        if (currentHp + (int)Mathf.Ceil(healValue) >= maxHp)  
+        if (isTeamHeal == true)
         {
-            currentHp = maxHp;
+            for (int i = 0; i < 3; i++)
+            {
+                if (teamCoutnrollerScript.TeamCurrentHp[i] != 0)
+                {
+                    if (charId == teamCoutnrollerScript.TeamIdData[i])
+                    {
+                        if (currentHp + Mathf.CeilToInt(healValue) >= maxHp)
+                        {
+                            currentHp = maxHp;
+                        }
+                        else
+                        {
+                            currentHp += Mathf.CeilToInt(healValue);
+                        }
+                        //ダメージ表記呼び出し
+                        var damageNotationObjs = Instantiate<GameObject>(damageNotationObj, transform.position, Quaternion.identity, canvasTransform);
+                        DamageNotation damageNotationObjsScript = damageNotationObjs.GetComponent<DamageNotation>();
+                        //引数は攻撃力、属性、会心判定(無)、表記の発生場所(味方の被ダメージに会心ダメージは発生しない)
+                        damageNotationObjsScript.DamageNotion(Mathf.CeilToInt(healValue), -1, false, (Vector2)transform.position + new Vector2(0, 0.0f));
+                    }
+                    else
+                    {
+                        if (teamCoutnrollerScript.TeamCurrentHp[i] + Mathf.CeilToInt(healValue) >= teamCoutnrollerScript.TeamMaxHp[i])
+                        {
+                            teamCoutnrollerScript.TeamCurrentHp[i] = teamCoutnrollerScript.TeamMaxHp[i];
+                        }
+                        else
+                        {
+                            teamCoutnrollerScript.TeamCurrentHp[i] += Mathf.CeilToInt(healValue);
+                        }
+                        //ダメージ表記呼び出し
+                        var damageNotationObjs = Instantiate<GameObject>(damageNotationObj, transform.position, Quaternion.identity, canvasTransform);
+                        DamageNotation damageNotationObjsScript = damageNotationObjs.GetComponent<DamageNotation>();
+                        //引数は攻撃力、属性、会心判定(無)、表記の発生場所(味方の被ダメージに会心ダメージは発生しない)
+                        damageNotationObjsScript.DamageNotion(Mathf.CeilToInt(healValue), -1, false, (Vector2)transform.position + new Vector2(0, 0.0f));
+                    }
+                }
+            }
         }
-        else 
+        else
         {
-            currentHp += (int)Mathf.Ceil(healValue);
+            if (currentHp + Mathf.CeilToInt(healValue) >= maxHp)
+            {
+                currentHp = maxHp;
+            }
+            else
+            {
+                currentHp += Mathf.CeilToInt(healValue);
+            }
+            //ダメージ表記呼び出し
+            var damageNotationObjs = Instantiate<GameObject>(damageNotationObj, transform.position, Quaternion.identity, canvasTransform);
+            DamageNotation damageNotationObjsScript = damageNotationObjs.GetComponent<DamageNotation>();
+            //引数は攻撃力、属性、会心判定(無)、表記の発生場所(味方の被ダメージに会心ダメージは発生しない)
+            damageNotationObjsScript.DamageNotion(Mathf.CeilToInt(healValue), -1, false, (Vector2)transform.position + new Vector2(0, 0.0f));
         }
-        //ダメージ表記呼び出し
-        var damageNotationObjs = Instantiate<GameObject>(damageNotationObj, transform.position, Quaternion.identity, canvasTransform);
-        DamageNotation damageNotationObjsScript = damageNotationObjs.GetComponent<DamageNotation>();
-        //引数は攻撃力、属性、会心判定(無)、表記の発生場所(味方の被ダメージに会心ダメージは発生しない)
-        damageNotationObjsScript.DamageNotion((int)Mathf.Ceil(healValue), -1, false, (Vector2)transform.position + new Vector2(0, 0.0f));
     }
 
     //集敵(固有スキルなどなのでリファクタリングでは別スクリプトにしておくこと)
@@ -542,14 +594,14 @@ public class Player : MonoBehaviour
     //キャラID、倍率計算後の攻撃力、属性、会心ダメージ、会心率、攻撃発生場所、攻撃範囲の大きさ(x,y)、ノックバック量(charIDが抜けているので加えること)
     //public void AttackMaker(int multipliedAttack, int finalAttributeNormalAttack, float multipliedAttentionDamage, float multipliedAttentionRate, Vector3 attackPos, Vector2 attackSize, float knockBackValue)
     //プレイヤーの矢(遠距離攻撃)
-    //攻撃タイプ(通常0)、継続時間(summonDuration)、ノックバック量、生成位置、サイズ
-    public void Arrow(int attackType, int multipliedAttack, int arrowAttribute, float arrowAttentionDamage, float arrowAttentionRate, Vector2 playerArrowObjsPos, Vector2 playerArrowObjsSize, float arrowKnockBackValue)
+    //攻撃タイプ(通常0)、攻撃力、属性、会心ダメージ、会心率、矢の発生位置、矢の大きさ、攻撃範囲(0の場合は単体攻撃)、ノックバック量、発射角度
+    public void Arrow(int attackType, int multipliedAttack, int arrowAttribute, float arrowAttentionDamage, float arrowAttentionRate, Vector2 playerArrowObjsPos, Vector2 playerArrowObjsSize, Vector2 arrowAttackRangeSize, float arrowKnockBackValue, float arrowLaunchAngle)
     {
         //設置
         var playerArrowObjs = Instantiate(playerArrowObj, playerArrowObjsPos, this.transform.rotation);
         playerArrowObjs.transform.localScale = new Vector3(playerArrowObjsSize.x, playerArrowObjsSize.y, 1.0f);
         PlayerArrowObject playerArrowObjectScript = playerArrowObjs.GetComponent<PlayerArrowObject>();
-        playerArrowObjectScript.Arrow(GetComponent<Player>(), charId, attackType, multipliedAttack, arrowAttribute, arrowAttentionDamage, arrowAttentionRate, arrowKnockBackValue);
+        playerArrowObjectScript.Arrow(GetComponent<Player>(), charId, attackType, multipliedAttack, arrowAttribute, arrowAttentionDamage, arrowAttentionRate, arrowAttackRangeSize, arrowKnockBackValue, arrowLaunchAngle);
     }
     
 
@@ -771,7 +823,7 @@ public class Player : MonoBehaviour
     {
         for(int i = 0; i < 9; i++) 
         {
-            Arrow(i + 1, (int)(attack * 0.7f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), 10);
+            Arrow(i + 1, (int)(attack * 0.7f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), new Vector2(1.0f, 1.0f), 10, 0);
         }
         
         yield break;
@@ -787,7 +839,17 @@ public class Player : MonoBehaviour
     //キャラIDが6のキャラのスキル
     IEnumerator Char6Skill()
     {
-
+        float timer = 0;
+        for(int i = 0; i < 6; i++) 
+        {
+            Heal(true, maxHp * 0.05f);
+            while (timer <= 0.5f) 
+            {
+                timer += Time.deltaTime;
+                yield return null;
+            }
+            timer = 0;
+        }
         yield break;
     }
 
@@ -827,7 +889,7 @@ public class Player : MonoBehaviour
     IEnumerator Char1Characteristic()
     {
         //敵を倒したときHP回復
-        Heal(maxHp * 0.15f);
+        Heal(false, maxHp * 0.15f);
 
         yield break;
     }
@@ -891,11 +953,13 @@ public class Player : MonoBehaviour
     }
 
     //被ダメージ
-    public void Damage(int damage, int enemyAttribute)
+    public void Damage(EnemyAction enemyAction, int damage, int enemyAttribute)
     {
         //無敵ではないとき
         if (invincibilityTimer <= 0)
         {
+            damage = GameSystemUtility.CalcDamage(damage, enemyAttribute, attribute, () => StartCoroutine(PairAnnihilationDamage(enemyAction, damage)));
+
             currentHp -= damage;
 
             //ダメージ表記呼び出し
@@ -907,10 +971,39 @@ public class Player : MonoBehaviour
             //DamageNotationCountroller damageNotationObjScript = damageNotationObj.GetComponent<DamageNotationCountroller>();
             //damageNotationObjScript.DamageNotation(damage, (Vector2)transform.position + new Vector2(0, 1.0f));
             //Debug.Log("Damaged" + damage);
-            Debug.Log("CurrentHP" + currentHp);
+            //Debug.Log("CurrentHP" + currentHp);
 
             //無敵時間の更新
-            invincibilityTimer = 0.5f;
+            InvincibilityTimer(0.25f);
+        }
+    }
+
+    //硬直
+    public void Stun() 
+    { 
+    } 
+
+    //対消滅ダメージ(0.1秒後に発生)//Timedelattaiem使いなさい
+    IEnumerator PairAnnihilationDamage(EnemyAction enemyAction, int damage)
+    {
+
+        for (int i = 0; i < 12; i++)
+        {
+            yield return null;
+        }
+
+        Debug.Log("対消滅ダメージ");
+        enemyAction.EnemyAttack();
+
+        yield break;
+    }
+
+    //無敵時間
+    public void InvincibilityTimer(float timer) 
+    {
+        if (invincibilityTimer <= timer) 
+        {
+            invincibilityTimer = timer;
         }
     }
 

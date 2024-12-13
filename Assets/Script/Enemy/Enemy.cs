@@ -42,9 +42,9 @@ public class Enemy : MonoBehaviour
         EnemyDbReference();
 
         //最大HPの計算
-        enemyMaxHp = (int)(enemyMaxHpBaseRate * (10.0f * Mathf.Pow(enemyLevel, 2) + 100.0f * enemyLevel + 100));
+        enemyMaxHp = Mathf.RoundToInt(enemyMaxHpBaseRate * (10.0f * Mathf.Pow(enemyLevel, 2) + 100.0f * enemyLevel + 100));
         //攻撃力の計算
-        enemyAttack = (int)(enemyMaxHpBaseRate * (0.01f * Mathf.Pow(enemyLevel, 2) + 10.0f * enemyLevel + 10));
+        enemyAttack = Mathf.RoundToInt(enemyMaxHpBaseRate * (0.01f * Mathf.Pow(enemyLevel, 2) + 10.0f * enemyLevel + 10));
     }
 
     //敵情報をデータベースから参照

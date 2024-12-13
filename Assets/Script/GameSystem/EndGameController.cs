@@ -1,41 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class EndGameController : MonoBehaviour
+// Escキーを入力するとゲームを終了します
+// 良くなった点: このスクリプトを入れるだけで動きます
+public class ApplicationQuitter : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
+    readonly KeyCode quitKey = KeyCode.Escape;
 
-    }
-
-    // Update is called once per frame
     void Update()
     {
-        //Escが押された時
-        if (Input.GetKey(KeyCode.Escape))
+        if (Input.GetKeyDown(quitKey))
         {
-            Debug.Log("終了");
-
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;//ゲームプレイ終了
-#else
-            Application.Quit();//ゲームプレイ終了
-#endif
+            QuitGame();
         }
     }
 
-    //ゲーム終了(エスケープキー)
-    public void EndGame()
+    public static void QuitGame()
     {
-        Debug.Log("終了");
-
 #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;//ゲームプレイ終了
-#else
-            Application.Quit();//ゲームプレイ終了
+        UnityEditor.EditorApplication.isPlaying = false;
+#elif UNITY_STANDALONE
+        Application.Quit();
 #endif
     }
-}
 
+    // ゲームの開始時にインスタンスを作成します
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    static void CreateInstanceOnLoad()
+    {
+        var instance = new GameObject(nameof(ApplicationQuitter), typeof(ApplicationQuitter));
+        DontDestroyOnLoad(instance);
+    }
+}

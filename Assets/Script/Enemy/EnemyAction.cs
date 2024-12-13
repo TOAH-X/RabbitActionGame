@@ -195,7 +195,7 @@ public class EnemyAction : MonoBehaviour
         var enemyAttackRangeObjs = Instantiate(enemyAttackRangeObj, this.transform.position, this.transform.rotation);
         enemyAttackRangeObjs.transform.localScale = new Vector3(1.5f, 1.5f, 1.0f);
         EnemyAttackRange enemyAttackRangeObjsScript = enemyAttackRangeObjs.GetComponent<EnemyAttackRange>();
-        enemyAttackRangeObjsScript.EnemyAttack(enemyAttack, enemyAttribute);
+        enemyAttackRangeObjsScript.EnemyAttack(this, enemyAttack, enemyAttribute);
     }
 
     //éãê¸(RayÇîÚÇŒÇ∑)
@@ -209,7 +209,7 @@ public class EnemyAction : MonoBehaviour
         {
             direction = new Vector2(-1, 0);
         }
-        Debug.Log(direction);
+        //Debug.Log(direction);
         float distance = 5.0f;
 
         RaycastHit2D[] hits = Physics2D.RaycastAll(origin, direction, distance);
@@ -219,16 +219,16 @@ public class EnemyAction : MonoBehaviour
             Array.Sort(hits, (x, y) => x.distance.CompareTo(-y.distance));
         }
 
-        Debug.DrawRay(origin, direction * distance, Color.red);
+        //Debug.DrawRay(origin, direction * distance, Color.red);
 
         foreach (var hit in hits)
         {
             if (hit.collider != this.gameObject)
             {
-                Debug.Log("Hit object: " + hit.collider.name + ", Tag: " + hit.collider.tag);
+                //Debug.Log("Hit object: " + hit.collider.name + ", Tag: " + hit.collider.tag);
                 if (hit.collider.tag == "Player")
                 {
-                    Debug.Log("hit");
+                    //Debug.Log("hit");
                     //ÉvÉåÉCÉÑÅ[Ç™å©Ç¬Ç©Ç¡ÇΩèÍçá
                     return true;
                 }

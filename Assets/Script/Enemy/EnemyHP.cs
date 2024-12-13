@@ -28,6 +28,8 @@ public class EnemyHP : MonoBehaviour
 
     private Enemy enemyScript;                                  //Enemyスクリプト
 
+     
+
     // Start is called before the first frame update
     void Start()
     {
@@ -77,8 +79,11 @@ public class EnemyHP : MonoBehaviour
     //被ダメージ処理
     public void EnemyDamage(int attackCharId, float attackRangePos, int damage, int attribute, bool isAttentionDamage,float knockBackValue)
     {
+        // 下の処理と代替可能
+        damage = GameSystemUtility.CalcDamage(damage, enemyAttribute, attribute, () => StartCoroutine(PairAnnihilationDamage(damage)));
+
         //属性倍率判定、仮置き(敵味方共通のスクリプトを作ること)
-        damage = AttributeCalculator(damage, attribute);
+        //damage = AttributeCalculator(damage, attribute);
 
         enemyCurrentHp -= damage;
 
@@ -200,7 +205,7 @@ public class EnemyHP : MonoBehaviour
             }
         }
 
-        return (int)Mathf.Ceil((float)(damage * damageRate));
+        return Mathf.CeilToInt((float)(damage * damageRate));
     }
 
     //対消滅ダメージ(0.1秒後に発生)
@@ -236,8 +241,6 @@ public class EnemyHP : MonoBehaviour
             Debug.Log("左に吸われる");
         }
     }
-
-
 
     //enemyMaxHp参照用(getset)
     public int EnemyMaxHp // プロパティ

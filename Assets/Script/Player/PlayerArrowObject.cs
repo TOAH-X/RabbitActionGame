@@ -8,18 +8,23 @@ public class PlayerArrowObject : MonoBehaviour
     private float arrowDuration = 0;                //寿命
     private int arrowAttack = 0;                    //攻撃力
     private int arrowAttribute = 0;                 //属性
-    private int arrowHp = 0;                        //HP
     private float arrowAttentionDamage = 0;         //会心ダメージ
     private float arrowAttentionRate = 0;           //会心率
     private float arrowKnockBackValue = 0;          //ノックバック量
+    private float arrowLaunchAngle = 0;             //射出角度
+
+    private Vector2 arrowAttackRangeSize = Vector2.zero;    //攻撃範囲
+    
+    private int arrowAttackType = 0;                //キャラ内の矢の種類。通常攻撃:0、その他はキャラごと
 
     private bool isAttentionDamage = false;         //会心ダメージか
 
-    private int arrowAttackType = 0;                //キャラ内の矢の種類。通常攻撃:0、その他はキャラごと
 
     private Rigidbody2D rb2d;                       //rigidbody
 
     private Player playerScript;                    //プレイヤースクリプト
+
+    private EnemyHP enemyHpScript;                  //エネミースクリプト
 
     // Start is called before the first frame update
     void Start()
@@ -34,10 +39,10 @@ public class PlayerArrowObject : MonoBehaviour
     }
 
     //生成された時(情報の受け取りなど)
-    //プレイヤースクリプト、キャラID、攻撃のタイプ(通常攻撃:0、その他はキャラごとに割り当て)、キャラ倍率計算後の攻撃力、属性、会心ダメージ、会心率、攻撃発生場所、攻撃範囲の大きさ(x,y)、ノックバック量
-    public void Arrow(Player player, int charId, int attackType, int attack, int attribute, float attentionDamage, float attentionRate, float knockBackValue)
+    //プレイヤースクリプト、キャラID、攻撃のタイプ(通常攻撃:0、その他はキャラごとに割り当て)、キャラ倍率計算後の攻撃力、属性、会心ダメージ、会心率、攻撃発生場所、攻撃範囲の大きさ(x,y)、ノックバック量、発射角度
+    public void Arrow(Player player, int charId, int attackType, int attack, int attribute, float attentionDamage, float attentionRate, Vector2 attackRangeSize, float knockBackValue, float launchAngle)
     {
-        //(初速)、向き、重力、追従するか、範囲ダメージかを書き加えること
+        //重力、追従するか、を書き加えること
         arrowCharId = charId;
         arrowAttack = attack;
         arrowAttribute = attribute;
@@ -45,6 +50,8 @@ public class PlayerArrowObject : MonoBehaviour
         arrowAttentionDamage = attentionDamage;
         arrowAttentionRate = attentionRate;
         arrowAttackType = attackType;
+        arrowLaunchAngle = launchAngle;
+        arrowAttackRangeSize = attackRangeSize;
 
         rb2d = GetComponent<Rigidbody2D>();
 
@@ -61,6 +68,51 @@ public class PlayerArrowObject : MonoBehaviour
     public void ArrowDestroy() 
     {
         Destroy(gameObject);
+    }
+
+    //敵との接触
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            enemyHpScript = other.gameObject.GetComponent<EnemyHP>();
+            //ダメージを与える処理
+            if (enemyHpScript != null)
+            {
+                //攻撃
+                Attack();
+
+                //消滅
+                ArrowDestroy();
+            }
+        }
+    }
+
+    //攻撃
+    public void Attack() 
+    {
+        //単体直接攻撃用
+        if (arrowAttackRangeSize.x == 0 && arrowAttackRangeSize.y == 0) 
+        {
+            //会心率の抽選
+            float randomPoint = Random.value * 100;
+            if (randomPoint <= arrowAttentionRate)
+            {
+                arrowAttack = (int)((float)(arrowAttack) * ((100 + arrowAttentionDamage) / 100));
+                isAttentionDamage = true;
+            }
+            //攻撃したキャラのID、ダメージ判定のx座標、攻撃力、属性、会心かどうか
+            enemyHpScript.EnemyDamage(arrowCharId, this.transform.position.x, arrowAttack, arrowAttribute, isAttentionDamage, arrowKnockBackValue);
+        }
+        //範囲攻撃
+        else
+        {
+            Vector2 attackRangePosition = this.transform.position;
+            playerScript.AttackMaker(arrowAttack, arrowAttribute, arrowAttentionDamage, arrowAttentionRate, attackRangePosition, arrowAttackRangeSize, arrowKnockBackValue);
+        }
+
+
+
     }
 
     //以降キャラごとの処理
@@ -97,11 +149,11 @@ public class PlayerArrowObject : MonoBehaviour
                 Vector2 direciton = new Vector2((enemyObj.transform.position.x - transform.position.x), (enemyObj.transform.position.y - transform.position.y));
                 if (timer <= 2f)
                 {
-                    transform.localEulerAngles = new Vector3(0, 0, -Mathf.Atan2(direciton.x, direciton.y) / Mathf.PI * 180 - (arrowAttackType - 5) * 12 * (2f - timer));
+                    transform.localEulerAngles = new Vector3(0, 0, -Mathf.Atan2(direciton.x, direciton.y) / Mathf.PI * 180 - (arrowAttackType - 5) * 12 * (2f - timer)) * 60 * Time.deltaTime;
                 }
                 else
                 {
-                    transform.localEulerAngles = new Vector3(0, 0, -Mathf.Atan2(direciton.x, direciton.y) / Mathf.PI * 180);
+                    transform.localEulerAngles = new Vector3(0, 0, -Mathf.Atan2(direciton.x, direciton.y) / Mathf.PI * 180) * 60 * Time.deltaTime;
                 }
             }
             //追尾
@@ -128,38 +180,5 @@ public class PlayerArrowObject : MonoBehaviour
         timer = 0;
         ArrowDestroy();
         yield break;
-    }
-
-    //敵との接触
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Enemy"))
-        {
-            EnemyHP enemyHpScript = other.gameObject.GetComponent<EnemyHP>();
-            //ダメージを与える処理
-            if (enemyHpScript != null)
-            {
-
-                //範囲攻撃
-                //Vector2 attackRangePosition = this.transform.position;
-                //Vector2 attackRangeSize = new Vector2(0.5f, 0.5f);
-                //playerScript.AttackMaker(arrowAttack, arrowAttribute, arrowAttentionDamage, arrowAttentionRate, attackRangePosition, attackRangeSize, arrowKnockBackValue);
-
-                //単体直接攻撃用
-                //会心率の抽選
-                float randomPoint = Random.value * 100;
-                if (randomPoint <= arrowAttentionRate)
-                {
-                    arrowAttack = (int)((float)(arrowAttack) * ((100 + arrowAttentionDamage) / 100));
-                    isAttentionDamage = true;
-                }
-                //攻撃したキャラのID、ダメージ判定のx座標、攻撃力、属性、会心かどうか
-                enemyHpScript.EnemyDamage(arrowCharId, this.transform.position.x, arrowAttack, arrowAttribute, isAttentionDamage, arrowKnockBackValue);
-                
-
-                //仮置き
-                ArrowDestroy();
-            }
-        }
     }
 }
