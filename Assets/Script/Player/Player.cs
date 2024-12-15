@@ -360,6 +360,7 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            //通常ジャンプ
             rb2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         }
     }
@@ -398,8 +399,8 @@ public class Player : MonoBehaviour
             //無敵
             InvincibilityTimer(0.25f);
             //ダッシュ可能時間の更新
-            dashTimer = 1;
-
+            dashTimer = 0.25f;
+            /*
             if (isLookRight == true)
             {
                 rb2D.AddForce(Vector2.right * dashForce, ForceMode2D.Impulse);
@@ -408,7 +409,96 @@ public class Player : MonoBehaviour
             {
                 rb2D.AddForce(Vector2.left * dashForce, ForceMode2D.Impulse);
             }
+            */
+            Vector2 moveDirection = Vector2.zero;
+            if (Input.GetKey(KeyCode.W)) 
+            { 
+                moveDirection = Vector2.up;
+            }
+            else if (Input.GetKey(KeyCode.A))
+            {
+                moveDirection = Vector2.left;
+            }
+            else if (Input.GetKey(KeyCode.S))
+            {
+                moveDirection = Vector2.down;
+            }
+            else if (Input.GetKey(KeyCode.D))
+            {
+                moveDirection = Vector2.right;
+            }
+            else 
+            {
+                if (isLookRight == true) 
+                {
+                    moveDirection = Vector2.right;
+                }
+                else 
+                {
+                    moveDirection = Vector2.left;
+                }
+            }
+            StartCoroutine(MoveDash(moveDirection));
+
         }
+    }
+    //ダッシュ
+    IEnumerator MoveDash(Vector2 moveDirection)
+    {
+
+        float thisGravity = rb2D.gravityScale;
+        rb2D.gravityScale = 0;
+        Vector2 thisVerocity = rb2D.velocity;
+        rb2D.velocity = Vector2.zero;
+
+        for (int i = 0; i < 12; i++) 
+        {
+            if (moveDirection==Vector2.up)
+            {
+                if (rb2D.velocity.y <= 10) 
+                {
+                    rb2D.AddForce(Vector2.up * dashForce, ForceMode2D.Impulse);
+                }
+                //rb2D.velocity = Vector2.right * dashForce;
+            }
+            
+            else if (moveDirection == Vector2.left)
+            {
+                if (rb2D.velocity.x >= -10)
+                {
+                    rb2D.AddForce(Vector2.left * dashForce, ForceMode2D.Impulse);
+                }
+            }
+            else if (moveDirection == Vector2.down)
+            {
+                if (rb2D.velocity.y >= -10)
+                {
+                    rb2D.AddForce(Vector2.down * dashForce, ForceMode2D.Impulse);
+                }
+            }
+            else if (moveDirection == Vector2.right)
+            {
+                if (rb2D.velocity.x <= 10)
+                {
+                    rb2D.AddForce(Vector2.right * dashForce, ForceMode2D.Impulse);
+                }
+            }
+            yield return null;
+        }
+
+        
+        rb2D.gravityScale = thisGravity;
+        //rb2D.velocity *= 0.1f;
+        //rb2D.velocity += thisVerocity;
+        rb2D.velocity = Vector2.zero;
+        
+        //空中にいる際は上向きに加速
+        if (IsGrounding() == false) 
+        {
+            rb2D.AddForce(new Vector2(0, 5f), ForceMode2D.Impulse);
+        }
+
+        yield break;
     }
 
     //特殊移動(フックショット)の処理
@@ -732,7 +822,8 @@ public class Player : MonoBehaviour
     //キャラIDが5のキャラの必殺技
     IEnumerator Char5SpecialMove()
     {
-        
+        AttackMaker((int)(attack * 3.6f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(7.5f, 7.5f), 300);
+
         yield break;
     }
 
@@ -952,6 +1043,8 @@ public class Player : MonoBehaviour
 
         yield break;
     }
+
+    
 
     //被ダメージ
     public void Damage(EnemyAction enemyAction, int damage, int enemyAttribute)
