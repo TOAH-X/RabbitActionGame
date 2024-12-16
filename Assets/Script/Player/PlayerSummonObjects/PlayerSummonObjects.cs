@@ -117,10 +117,10 @@ public class PlayerSummonObjects : MonoBehaviour
     IEnumerator Char4skill()
     {
         float timer = 0;
-        for (int i = 0; i < 25; i++)
+        for (int i = 0; i < 100; i++)
         {
-            Attack((int)(summonAttack * 0.75f), this.transform.position, this.transform.localScale * 1);
-            while (timer <= 0.4f)
+            Attack((int)(summonAttack * 0.3f), this.transform.position, this.transform.localScale * 1);
+            while (timer <= 0.1f)
             {
                 yield return null;
                 timer += Time.deltaTime;

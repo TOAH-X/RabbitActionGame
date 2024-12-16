@@ -6,6 +6,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rb2D;                  //Rigidbody2D
+    [SerializeField] private SpriteRenderer spriteRenderer;     //SpriteRenderer
     [SerializeField] float moveSpeed = 3.0f;                    //移動速度
     [SerializeField] float baseMoveSpeed = 3.0f;                //基礎移動速度
     [SerializeField] float jumpForce = 12.0f;                   //ジャンプ力
@@ -25,6 +26,8 @@ public class Player : MonoBehaviour
     
     [SerializeField] List<GameObject> hookShotObjList = new List<GameObject>();     //フックショットのプレハブリスト
     [SerializeField] int hookShotObjCount = 0;                  //フックショットのカウント
+
+    [SerializeField] GameObject afterEffectObj;                 //残像
 
     [SerializeField] int staminaRecoverySpeed = 60;             //スタミナ回復速度(1秒(60フレーム)で幾つ回復できるか)※1フレーム1回復が限度、数が大きいほど緩やかに回復
 
@@ -100,6 +103,7 @@ public class Player : MonoBehaviour
     //属性バフも加えること
     private bool isLookRight = true;                            //向き判定(右、前を向いているか)
     private bool isHookShotMoving = false;                      //フックショットで移動中か
+    private bool isDash = false;                                //ダッシュ中か
 
     private int staminaRecoveryCounter = 0;                     //スタミナ回復処理のカウンター
 
@@ -127,6 +131,7 @@ public class Player : MonoBehaviour
         Application.targetFrameRate = 60;
 
         rb2D = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
         //ステータスをデータベースから参照
         CharDbReference();
@@ -162,8 +167,12 @@ public class Player : MonoBehaviour
         //特殊移動(フックショット)中ではないとき
         if (isHookShotMoving == false)
         {
-            //移動
-            MoveUpdate();
+            //ダッシュ中か
+            if (isDash == false) 
+            {
+                //移動
+                MoveUpdate();
+            }
 
             //特殊移動(フックショット)...一部キャラの特殊移動？スキルにする予定
             HookShot();
@@ -179,8 +188,6 @@ public class Player : MonoBehaviour
             {
                 //ジャンプ
                 JumpUpdate();
-
-                
             }
         }
 
@@ -445,11 +452,14 @@ public class Player : MonoBehaviour
     //ダッシュ
     IEnumerator MoveDash(Vector2 moveDirection)
     {
-
+        isDash = true;
         float thisGravity = rb2D.gravityScale;
         rb2D.gravityScale = 0;
         Vector2 thisVerocity = rb2D.velocity;
         rb2D.velocity = Vector2.zero;
+        //透明化
+        Color thisColor = spriteRenderer.color;
+        spriteRenderer.color = new Color32(0, 0, 0, 0);
 
         for (int i = 0; i < 12; i++) 
         {
@@ -483,14 +493,27 @@ public class Player : MonoBehaviour
                     rb2D.AddForce(Vector2.right * dashForce, ForceMode2D.Impulse);
                 }
             }
+            if (i % 3 == 0) 
+            {
+                //残像の生成(GetComponentをなんとかする)
+                var afterEffectObjs = Instantiate(afterEffectObj, this.transform.position, this.transform.rotation);
+                afterEffectObjs.transform.localScale = this.transform.localScale;
+                SpriteRenderer afterEffectObjsSpriteRenderer = afterEffectObjs.GetComponent<SpriteRenderer>();
+                afterEffectObjsSpriteRenderer.color = new Color32(50, 150, 200, 150);
+                Destroy(afterEffectObjs, 0.25f);
+            }
             yield return null;
         }
 
+        //透明化解除
+        spriteRenderer.color = thisColor;
         
         rb2D.gravityScale = thisGravity;
         //rb2D.velocity *= 0.1f;
         //rb2D.velocity += thisVerocity;
         rb2D.velocity = Vector2.zero;
+
+        isDash = false;
         
         //空中にいる際は上向きに加速
         if (IsGrounding() == false) 
@@ -1081,14 +1104,16 @@ public class Player : MonoBehaviour
     //対消滅ダメージ(0.1秒後に発生)//Timedelattaiem使いなさい
     IEnumerator PairAnnihilationDamage(EnemyAction enemyAction, int damage)
     {
-
         for (int i = 0; i < 12; i++)
         {
             yield return null;
         }
 
         Debug.Log("対消滅ダメージ");
-        enemyAction.EnemyAttack();
+        if (enemyAction == true) 
+        {
+            enemyAction.EnemyAttack();
+        }
 
         yield break;
     }

@@ -22,6 +22,9 @@ public class GaugeCountroller : MonoBehaviour
 
     private RectTransform rectTransform;                            //Imageの情報取得
 
+    private GameObject staminaParentObj;                            //スタミナゲージの親
+    private Vector3 staminaParentObjRotation;                       //スタミナゲージの親の回転情報
+
     // Start is called before the first frame update
     void Start()
     {
@@ -56,6 +59,13 @@ public class GaugeCountroller : MonoBehaviour
             gaugeValueNotationObjs = Instantiate<GameObject>(gaugeValueNotationObj, transform.position, Quaternion.identity, canvasTransform);
             gaugeValueNotationObjsScript = gaugeValueNotationObjs.GetComponent<GaugeValueNotationCountroller>();
         }
+        //スタミナゲージ
+        else if (thisObjName == "StaminaGaugeMain")
+        {
+            //親の取得
+            staminaParentObj = transform.parent.gameObject;
+            staminaParentObjRotation = staminaParentObj.transform.localEulerAngles;
+        }
     }
 
     // Update is called once per frame
@@ -83,8 +93,15 @@ public class GaugeCountroller : MonoBehaviour
             //Stamina値の受け渡し
             maxValue = player.MaxStamina;
             currentValue = player.CurrentStamina;
-            //プレイヤーに追従
-             
+            //スタミナが最大の時は回転して隠す
+            if (maxValue <= currentValue) 
+            {
+                staminaParentObj.transform.localEulerAngles = new Vector3(0, 90, 0);
+            }
+            else 
+            {
+                staminaParentObj.transform.localEulerAngles = staminaParentObjRotation;
+            }
         }
         else if (thisObjName == "EnemyHPGaugeMain") 
         {
@@ -110,7 +127,6 @@ public class GaugeCountroller : MonoBehaviour
             maxValue = teamCoutnroller.TeamMaxHp[2];
             currentValue = teamCoutnroller.TeamCurrentHp[2];
         }
-
 
         //現在地が最大値を超えた際にはみ出さないようにする処理
         if ((float)((float)currentValue / (float)maxValue) > 1) 
