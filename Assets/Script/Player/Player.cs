@@ -172,6 +172,8 @@ public class Player : MonoBehaviour
             {
                 //移動
                 MoveUpdate();
+                //ダッシュ
+                Dash();
             }
 
             //特殊移動(フックショット)...一部キャラの特殊移動？スキルにする予定
@@ -179,9 +181,6 @@ public class Player : MonoBehaviour
 
             //通常攻撃
             NormalAttack(attack, normalAttackAttribute);           //攻撃力依存
-
-            //ダッシュ
-            Dash();
 
             //Rayの判定(地上にいるとき)
             if (IsGrounding() == true)
@@ -399,7 +398,7 @@ public class Player : MonoBehaviour
     //ダッシュ
     private void Dash()
     {
-        if (Input.GetMouseButtonDown(1) && currentStamina > 10 && dashTimer <= 0)
+        if (Input.GetMouseButtonDown(1) && currentStamina > 10 && dashTimer <= 0) 
         {
             //スタミナ消費
             ExhaustStamina(10);
@@ -480,7 +479,10 @@ public class Player : MonoBehaviour
         Color thisColor = spriteRenderer.color;
         spriteRenderer.color = new Color32(0, 0, 0, 0);
 
-        for (int i = 0; i < 12; i++) 
+        float timer = 0;
+        int counter = 0;
+
+        while (timer <= 0.2f)  
         {
             /*
             if (moveDirection==Vector2.up)
@@ -519,15 +521,18 @@ public class Player : MonoBehaviour
             }
             
 
-            if (i % 2 == 0) 
+            if (counter % 2 == 0) 
             {
                 //残像の生成(GetComponentをなんとかする)
                 var afterEffectObjs = Instantiate(afterEffectObj, this.transform.position, this.transform.rotation);
                 afterEffectObjs.transform.localScale = this.transform.localScale;
                 SpriteRenderer afterEffectObjsSpriteRenderer = afterEffectObjs.GetComponent<SpriteRenderer>();
-                afterEffectObjsSpriteRenderer.color = new Color32(50, 150, 200, 150);
+                afterEffectObjsSpriteRenderer.color = new Color32(50, 150, 200, 100);
                 Destroy(afterEffectObjs, 0.25f);
             }
+
+            timer += Time.deltaTime;
+            counter++;
             yield return null;
         }
 
