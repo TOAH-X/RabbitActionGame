@@ -417,7 +417,9 @@ public class Player : MonoBehaviour
                 rb2D.AddForce(Vector2.left * dashForce, ForceMode2D.Impulse);
             }
             */
+
             Vector2 moveDirection = Vector2.zero;
+            /*
             if (Input.GetKey(KeyCode.W)) 
             { 
                 moveDirection = Vector2.up;
@@ -445,6 +447,23 @@ public class Player : MonoBehaviour
                     moveDirection = Vector2.left;
                 }
             }
+            */
+            //8方向対応
+            float moveX = Input.GetAxisRaw("Horizontal");
+            float moveY = Input.GetAxisRaw("Vertical");
+            moveDirection = new Vector2(moveX, moveY).normalized;
+            if (moveDirection.magnitude == 0) 
+            {
+                if (isLookRight == true)
+                {
+                    moveDirection = Vector2.right;
+                }
+                else
+                {
+                    moveDirection = Vector2.left;
+                }
+            }
+
             StartCoroutine(MoveDash(moveDirection));
 
         }
@@ -463,6 +482,7 @@ public class Player : MonoBehaviour
 
         for (int i = 0; i < 12; i++) 
         {
+            /*
             if (moveDirection==Vector2.up)
             {
                 if (rb2D.velocity.y <= 10) 
@@ -471,7 +491,6 @@ public class Player : MonoBehaviour
                 }
                 //rb2D.velocity = Vector2.right * dashForce;
             }
-            
             else if (moveDirection == Vector2.left)
             {
                 if (rb2D.velocity.x >= -10)
@@ -493,7 +512,14 @@ public class Player : MonoBehaviour
                     rb2D.AddForce(Vector2.right * dashForce, ForceMode2D.Impulse);
                 }
             }
-            if (i % 3 == 0) 
+            */
+            if (rb2D.velocity.magnitude <= 10) 
+            {
+                rb2D.AddForce(moveDirection * dashForce, ForceMode2D.Impulse);
+            }
+            
+
+            if (i % 2 == 0) 
             {
                 //残像の生成(GetComponentをなんとかする)
                 var afterEffectObjs = Instantiate(afterEffectObj, this.transform.position, this.transform.rotation);
@@ -1194,7 +1220,7 @@ public class Player : MonoBehaviour
     }
     */
 
-    //maxHp参照用(getset)
+            //maxHp参照用(getset)
     public int MaxHp // プロパティ
     {
         get { return maxHp; }  // 通称ゲッター。呼び出した側がscoreを参照できる
