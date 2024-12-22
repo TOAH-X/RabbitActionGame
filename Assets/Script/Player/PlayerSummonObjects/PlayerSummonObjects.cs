@@ -72,7 +72,7 @@ public class PlayerSummonObjects : MonoBehaviour
     //攻撃力、座標、サイズ
     public void Attack(int attack, Vector2 attackRangePosition, Vector2 attackRangeSize)
     {
-        playerScript.AttackMaker(attack, summonAttribute, summonAttentionDamage, summonAttentionRate, attackRangePosition, attackRangeSize, summonKnockBackValue);
+        playerScript.AttackMaker(attack, summonAttribute, summonAttentionDamage, summonAttentionRate, attackRangePosition, attackRangeSize, summonKnockBackValue, false);
     }
 
     //回復

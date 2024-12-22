@@ -1,3 +1,4 @@
+using System.Buffers.Text;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +24,9 @@ public class TeamCoutnroller : MonoBehaviour
     [SerializeField] float[] teamCurrentSkillRechargeData = new float[3];       //チームの現在スキルクールタイムデータ
     [SerializeField] float[] teamCurrentSpecialMoveRechargeData = new float[3]; //チームの現在必殺技クールタイムデータ
 
+    //キャラクターデータベース
+    public DB_CharData dB_charData;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -38,9 +42,9 @@ public class TeamCoutnroller : MonoBehaviour
         {
             teamIdData[i] = i + 1;
         }
-        teamIdData[0] = 4;
-        teamIdData[1] = 1;
-        teamIdData[2] = 6;
+        teamIdData[0] = 6;
+        teamIdData[1] = 5;
+        teamIdData[2] = 4;
 
         //配列の初期化(エラー対策)
         if (teamCurrentHpData == null || teamCurrentHpData.Length < 3)
@@ -54,11 +58,13 @@ public class TeamCoutnroller : MonoBehaviour
             isTeamCharAlive[i] = true;
         }
 
-        teamCurrentHpData[0] = playerScript.CurrentHp;
-        teamCurrentHpData[1] = playerScript.CurrentHp;
-        teamCurrentHpData[2] = playerScript.CurrentHp;
+        //最終的には保管している情報から現在HPを代入すること(チーム更新時のための最大HPを読み込む関数を作ること)
+        for(int i = 0; i < 3; i++)
+        {
+            teamMaxHpData[i] = dB_charData.charData[teamIdData[i]].baseHp;              //最大HP
+            teamCurrentHpData[i] = dB_charData.charData[teamIdData[i]].baseHp;          //現在HP
+        }
 
-        
         //一人目だった場合
         currentChar = 0;
         sub1Obj.transform.localPosition = new Vector3(25f, 0, 0);
@@ -70,11 +76,18 @@ public class TeamCoutnroller : MonoBehaviour
 
         playerScript.CharChange(teamIdData[0]);                                 //プレイヤースクリプトにキャラ変更した情報を渡す
 
+        charId = teamIdData[currentChar];                                       //現在の表のキャラのキャラIDの更新
     }
 
     // Update is called once per frame
     void Update()
     {
+        //チーム変更
+        if (Input.GetKey(KeyCode.Z)) 
+        {
+            ChangeTeam();
+        }
+
         GetPlayerData(currentChar);
 
         //キャラ死亡時、生存フラグ変更と強制チェンジ
@@ -152,7 +165,6 @@ public class TeamCoutnroller : MonoBehaviour
         //3キャラに適合した場合
         if (teamCurrentHpData[updateCharId] > 0)
         {
-            Debug.Log(updateCharId + "人目に変更");
             sub1Obj.transform.localPosition = new Vector3(0, 0, 0);
             sub2Obj.transform.localPosition = new Vector3(0, 0, 0);
             sub3Obj.transform.localPosition = new Vector3(0, 0, 0);
@@ -174,6 +186,7 @@ public class TeamCoutnroller : MonoBehaviour
             playerScript.CharChange(teamIdData[updateCharId]);                  //プレイヤースクリプトにキャラ変更した情報を渡す
 
             currentChar = updateCharId;
+            charId = teamIdData[currentChar];                                   //現在の表のキャラのキャラIDの更新
         }
     }
 
@@ -208,6 +221,19 @@ public class TeamCoutnroller : MonoBehaviour
         }
     }
 
+    //チーム編成変更
+    public void ChangeTeam() 
+    {
+        teamIdData[0] = 1;
+        teamIdData[1] = 2;
+        teamIdData[2] = 3;
+
+        GetPlayerData(currentChar);
+        SetPlayerData(0);
+
+        playerScript.CharChange(teamIdData[0]);                                 //プレイヤースクリプトにキャラ変更した情報を渡す
+    }
+
     //プレイヤーからデータを取得
     public void GetPlayerData(int currentCharId) 
     {
@@ -227,7 +253,6 @@ public class TeamCoutnroller : MonoBehaviour
     }
 
     //maxHp参照用(getset)
-
     public int[] TeamMaxHp // プロパティ
     {
         get { return teamMaxHpData; }  // 通称ゲッター。呼び出した側がscoreを参照できる
@@ -235,7 +260,6 @@ public class TeamCoutnroller : MonoBehaviour
     }
 
     //currentHp参照用(getset)
-
     public int[] TeamCurrentHp // プロパティ
     {
         get { return teamCurrentHpData; }  // 通称ゲッター。呼び出した側がscoreを参照できる
@@ -243,18 +267,23 @@ public class TeamCoutnroller : MonoBehaviour
     }
 
     //teamIdData参照用(getset)
-
     public int[] TeamIdData // プロパティ
     {
         get { return teamIdData; }  // 通称ゲッター。呼び出した側がscoreを参照できる
         set { teamIdData = value; } // 通称セッター。value はセットする側の数字などを反映する
     }
 
-    //charIdData参照用(getset)
-
+    //CharId参照用(getset)現在のキャラのキャラID
     public int CharId // プロパティ
     {
         get { return charId; }  // 通称ゲッター。呼び出した側がscoreを参照できる
         set { charId = value; } // 通称セッター。value はセットする側の数字などを反映する
+    }
+
+    //CurrentChar参照用(getset)現在のキャラがチームで何番目か
+    public int CurrentChar // プロパティ
+    {
+        get { return currentChar; }  // 通称ゲッター。呼び出した側がscoreを参照できる
+        set { currentChar = value; } // 通称セッター。value はセットする側の数字などを反映する
     }
 }

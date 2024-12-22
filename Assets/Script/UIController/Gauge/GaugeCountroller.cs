@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GaugeCountroller : MonoBehaviour
 {
@@ -25,6 +26,10 @@ public class GaugeCountroller : MonoBehaviour
     private GameObject staminaParentObj;                            //スタミナゲージの親
     private Vector3 staminaParentObjRotation;                       //スタミナゲージの親の回転情報
 
+    private Color32[] hPGaugeColor = new Color32[4];                //HPゲージの色
+
+    private Image thisImage;                                        //自身のImage
+
     // Start is called before the first frame update
     void Start()
     {
@@ -38,7 +43,7 @@ public class GaugeCountroller : MonoBehaviour
 
 
         //自身のオブジェクト名を取得
-        thisObjName = this.gameObject.name;
+        thisObjName = gameObject.name;
 
         //初期値(仮)
         maxValue = 100;
@@ -58,6 +63,15 @@ public class GaugeCountroller : MonoBehaviour
             //HP(ゲージの数値)表記呼び出し(プレハブ)
             gaugeValueNotationObjs = Instantiate<GameObject>(gaugeValueNotationObj, transform.position, Quaternion.identity, canvasTransform);
             gaugeValueNotationObjsScript = gaugeValueNotationObjs.GetComponent<GaugeValueNotationCountroller>();
+        }
+        //HPゲージの場合(軽量化)
+        if (thisObjName == "HPGaugeMain" || thisObjName == "Sub1HPGaugeMain" || thisObjName == "Sub2HPGaugeMain" || thisObjName == "Sub3HPGaugeMain") 
+        {
+            thisImage = gameObject.GetComponent<Image>();
+            hPGaugeColor[0] = new Color32(20, 200, 50, 255);
+            hPGaugeColor[1] = new Color32(200, 200, 20, 255);
+            hPGaugeColor[2] = new Color32(200, 150, 20, 255);
+            hPGaugeColor[3] = new Color32(200, 50, 20, 255);
         }
         //スタミナゲージ
         else if (thisObjName == "StaminaGaugeMain")
@@ -114,18 +128,24 @@ public class GaugeCountroller : MonoBehaviour
             //Sub1HP値の受け渡し
             maxValue = teamCoutnroller.TeamMaxHp[0];
             currentValue = teamCoutnroller.TeamCurrentHp[0];
+            //HPゲージの色の変更
+            ChangeHPGaugeColor((float)((float)currentValue / (float)maxValue));
         }
         else if (thisObjName == "Sub2HPGaugeMain")
         {
             //Sub2HP値の受け渡し
             maxValue = teamCoutnroller.TeamMaxHp[1];
             currentValue = teamCoutnroller.TeamCurrentHp[1];
+            //HPゲージの色の変更
+            ChangeHPGaugeColor((float)((float)currentValue / (float)maxValue));
         }
         else if (thisObjName == "Sub3HPGaugeMain")
         {
             //Sub3HP値の受け渡し
             maxValue = teamCoutnroller.TeamMaxHp[2];
             currentValue = teamCoutnroller.TeamCurrentHp[2];
+            //HPゲージの色の変更
+            ChangeHPGaugeColor((float)((float)currentValue / (float)maxValue));
         }
 
         //現在地が最大値を超えた際にはみ出さないようにする処理
@@ -148,6 +168,29 @@ public class GaugeCountroller : MonoBehaviour
         {
             //値表記の反映
             gaugeValueNotationObjsScript.GaugeValueNotation(maxValue, currentValue);
+            //HPゲージの色の変更
+            ChangeHPGaugeColor((float)((float)currentValue / (float)maxValue));
+        }
+    }
+
+    //HPゲージのカラーの変更(現在HPの割合に応じて)
+    public void ChangeHPGaugeColor(float valueRate) 
+    {
+        if (valueRate >= 0.75f)
+        {
+            thisImage.color = hPGaugeColor[0];
+        }
+        else if (valueRate >= 0.50f) 
+        {
+            thisImage.color = hPGaugeColor[1];
+        }
+        else if (valueRate >= 0.25f)
+        {
+            thisImage.color = hPGaugeColor[2];
+        }
+        else
+        {
+            thisImage.color = hPGaugeColor[3];
         }
     }
 }

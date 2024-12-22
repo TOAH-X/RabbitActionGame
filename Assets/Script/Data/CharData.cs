@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [Serializable]
 public class CharData
@@ -48,26 +49,26 @@ public class CharData
     public string specialMoveExplanation;               //必殺技説明
 
     [Header("スキルクールタイム")]
-    public float maxSkillRecharge;                      //スキルのクールタイム設定(秒)
-    //public float currentSkillRecharge = 0;            //現在のスキルのクールタイム(次にスキルが使えるまでの時間)
+    public float maxSkillRecharge;                      //スキルのクールタイム(秒)
     [Header("必殺技コスト")]
     public int maxSpecialMoveEnergy;                    //必殺技のコスト
     [Header("必殺技クールタイム")]
-    public int maxSpecialMoveRecharge;                  //必殺技のコスト
-    //public int currentSpeechMoveEnergy = 100;         //現在の必殺技のコストがどのくらい溜まっているか
+    public int maxSpecialMoveRecharge;                  //必殺技のクールタイム(秒)
 
     //public int weaponId = 0;                          //装備している武器のID
 
     //public int sousinguId = 0;                        //装備している装身具(聖遺物)のID
 
-    //属性耐性デバフを入れること
-
-
-    //public float moveSpeed = 3.0f;                    //移動速度
     [Header("基礎移動速度")]
     public float baseMoveSpeed = 3.0f;                  //基礎移動速度
     //public float buffMoveSpeed = 3.0f;                //移動速度バフ
     //public float jumpForce = 12.0f;                   //ジャンプ力
     //public float dashForce = 5.0f;                    //ダッシュ力
-    
+
+    [Header("アイコン画像")]
+    public Sprite charIcon;                              //アイコン画像
+    [Header("立ち絵")]
+    public Sprite charFullBodyImage;                     //立ち絵
+    //[Header("ゲーム内キャラ")]
+    //public Sprite charAnimation;                              //ゲーム内キャラ
 }

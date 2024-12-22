@@ -101,14 +101,14 @@ public class PlayerArrowObject : MonoBehaviour
                 arrowAttack = (int)((float)(arrowAttack) * ((100 + arrowAttentionDamage) / 100));
                 isAttentionDamage = true;
             }
-            //攻撃したキャラのID、ダメージ判定のx座標、攻撃力、属性、会心かどうか
-            enemyHpScript.EnemyDamage(arrowCharId, this.transform.position.x, arrowAttack, arrowAttribute, isAttentionDamage, arrowKnockBackValue);
+            //攻撃したキャラのID、ダメージ判定のx座標、攻撃力、属性、会心かどうか、追撃かどうか(基本的に追撃ではないのでfalse)
+            enemyHpScript.EnemyDamage(arrowCharId, this.transform.position.x, arrowAttack, arrowAttribute, isAttentionDamage, arrowKnockBackValue, false);
         }
         //範囲攻撃
         else
         {
             Vector2 attackRangePosition = this.transform.position;
-            playerScript.AttackMaker(arrowAttack, arrowAttribute, arrowAttentionDamage, arrowAttentionRate, attackRangePosition, arrowAttackRangeSize, arrowKnockBackValue);
+            playerScript.AttackMaker(arrowAttack, arrowAttribute, arrowAttentionDamage, arrowAttentionRate, attackRangePosition, arrowAttackRangeSize, arrowKnockBackValue, false);
         }
 
 

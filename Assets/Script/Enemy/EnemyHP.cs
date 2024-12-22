@@ -27,14 +27,15 @@ public class EnemyHP : MonoBehaviour
     private float currentKnockBackCoolTime = 0;                 //次にノックバックをするまでの時間
 
     private Enemy enemyScript;                                  //Enemyスクリプト
+    private EnemyHP enemyHpScript;                              //EnemyHPスクリプト
+    private Player playerScript;                                //Playerスクリプト
 
-     
+    [SerializeField] float debuffedAttributeResistance = 0;     //属性耐性
 
     // Start is called before the first frame update
     void Start()
     {
-        //(余力があれば軽い処理に書き換えること)
-        playerObj = GameObject.Find("Player");
+        enemyHpScript = GetComponent<EnemyHP>();
 
         //ステータス参照
         enemyScript = this.gameObject.GetComponent<Enemy>();
@@ -46,8 +47,9 @@ public class EnemyHP : MonoBehaviour
 
         //Canvasを見つける(ダメージ表示用など)
         canvasTransform = GameObject.Find("Canvas").transform;
-        //プレイヤーを見つける
+        //プレイヤーを見つける(余力があれば軽い処理に書き換えること)
         playerObj = GameObject.Find("Player");
+        playerScript = playerObj.gameObject.GetComponent<Player>();
     }
 
     // Update is called once per frame
@@ -77,14 +79,17 @@ public class EnemyHP : MonoBehaviour
     }
 
     //被ダメージ処理
-    public void EnemyDamage(int attackCharId, float attackRangePos, int damage, int attribute, bool isAttentionDamage,float knockBackValue)
+    public void EnemyDamage(int attackCharId, float attackRangePos, int damage, int attribute, bool isAttentionDamage, float knockBackValue, bool isFollowUpAttack)
     {
-        // 下の処理と代替可能
+        //倍率(書き換えること)
+        float attributeResistance = (float)((float)GameSystemUtility.CalcDamage(damage, enemyAttribute, attribute, () => StartCoroutine(PairAnnihilationDamage(damage))) /(float) damage);
+        //下の処理と代替可能
         damage = GameSystemUtility.CalcDamage(damage, enemyAttribute, attribute, () => StartCoroutine(PairAnnihilationDamage(damage)));
+        //属性耐性の倍率から計算
+        damage = Mathf.CeilToInt(damage * (attributeResistance + Mathf.Sqrt(debuffedAttributeResistance * (Mathf.Sqrt(1 / attributeResistance)))));
 
         //属性倍率判定、仮置き(敵味方共通のスクリプトを作ること)
         //damage = AttributeCalculator(damage, attribute);
-
         enemyCurrentHp -= damage;
 
         //ダメージ表記呼び出し
@@ -123,9 +128,24 @@ public class EnemyHP : MonoBehaviour
         //最後に攻撃したキャラIDの保存
         latestAttackCharId = attackCharId;
 
-        Debug.Log("キャラID" + attackCharId + "　与えたダメージ" + damage);
+        //追撃
+        if (isFollowUpAttack == false) 
+        {
+            if (playerScript == null) 
+            {
+                playerScript = playerObj.gameObject.GetComponent<Player>();
+            }
+            if (playerScript != null)
+            {
+                playerScript.FollowUpAttack(enemyHpScript);
+            }
+            
+        }
+
+        //Debug.Log("キャラID" + attackCharId + "　与えたダメージ" + damage);
     }
 
+    /*
     //属性倍率判定、仮置き(敵味方共通のスクリプトを作ること)
     public int AttributeCalculator(int damage, int attribute) 
     {
@@ -207,6 +227,7 @@ public class EnemyHP : MonoBehaviour
 
         return Mathf.CeilToInt((float)(damage * damageRate));
     }
+    */
 
     //対消滅ダメージ(0.1秒後に発生)
     IEnumerator PairAnnihilationDamage(int damage) 
@@ -217,7 +238,7 @@ public class EnemyHP : MonoBehaviour
         }
 
         Player playerScript = playerObj.GetComponent<Player>();
-        playerScript.AttackMaker(damage, 0, 0, 0, this.transform.position, new Vector2(5, 5), 1000);
+        playerScript.AttackMaker(damage, 0, 0, 0, this.transform.position, new Vector2(5, 5), 1000, true);
 
         yield break;
     }
@@ -240,6 +261,13 @@ public class EnemyHP : MonoBehaviour
             enemyActionScript.EnemyKnockBack(isKnockBackRight);
             Debug.Log("左に吸われる");
         }
+    }
+
+    //属性耐性ダウン
+    public void DebuffedAttributeResistance(float attributeResistance, bool isTypeMoment, float duration, int debuffedCharId, int debuffedId)
+    {
+        debuffedAttributeResistance = attributeResistance;
+        Debug.Log(debuffedAttributeResistance+"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     }
 
     //enemyMaxHp参照用(getset)

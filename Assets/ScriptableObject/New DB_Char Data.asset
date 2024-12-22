@@ -31,6 +31,8 @@ MonoBehaviour:
     maxSpecialMoveEnergy: 0
     maxSpecialMoveRecharge: 0
     baseMoveSpeed: 3
+    charIcon: {fileID: 0}
+    charFullBodyImage: {fileID: 0}
   - charId: 1
     charName: "\u304B\u3050\u3084"
     rarity: 5
@@ -49,6 +51,8 @@ MonoBehaviour:
     maxSpecialMoveEnergy: 0
     maxSpecialMoveRecharge: 7
     baseMoveSpeed: 3
+    charIcon: {fileID: 0}
+    charFullBodyImage: {fileID: 0}
   - charId: 2
     charName: "\u30B7\u30E2\u30E9"
     rarity: 5
@@ -67,6 +71,8 @@ MonoBehaviour:
     maxSpecialMoveEnergy: 0
     maxSpecialMoveRecharge: 10
     baseMoveSpeed: 3
+    charIcon: {fileID: 0}
+    charFullBodyImage: {fileID: 0}
   - charId: 3
     charName: "\u6E0B\u7D19\u85CD\u5B50"
     rarity: 4
@@ -85,6 +91,8 @@ MonoBehaviour:
     maxSpecialMoveEnergy: 0
     maxSpecialMoveRecharge: 14
     baseMoveSpeed: 3
+    charIcon: {fileID: 0}
+    charFullBodyImage: {fileID: 0}
   - charId: 4
     charName: "\u65E5\u8F2A\u91D1\u70CF"
     rarity: "\uFF15"
@@ -103,6 +111,8 @@ MonoBehaviour:
     maxSpecialMoveEnergy: 0
     maxSpecialMoveRecharge: 22
     baseMoveSpeed: 3
+    charIcon: {fileID: 0}
+    charFullBodyImage: {fileID: 0}
   - charId: 5
     charName: "\u6709\u4ECD\u7D14\u5B50"
     rarity: 4
@@ -121,6 +131,8 @@ MonoBehaviour:
     maxSpecialMoveEnergy: 0
     maxSpecialMoveRecharge: 18
     baseMoveSpeed: 3
+    charIcon: {fileID: 21300000, guid: f89d4e99e1984ee4e805a39158c666fe, type: 3}
+    charFullBodyImage: {fileID: 0}
   - charId: 6
     charName: "\u57CE\u30F6\u5D0E\u8C4A\u6D77"
     rarity: 4
@@ -139,3 +151,5 @@ MonoBehaviour:
     maxSpecialMoveEnergy: 0
     maxSpecialMoveRecharge: 19
     baseMoveSpeed: 3
+    charIcon: {fileID: 21300000, guid: dd78386000192b54fbfd5c2541e915bf, type: 3}
+    charFullBodyImage: {fileID: 21300000, guid: dd78386000192b54fbfd5c2541e915bf, type: 3}

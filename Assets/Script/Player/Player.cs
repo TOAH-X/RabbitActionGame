@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,20 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject playerSummonObjects;            //プレイヤーが召喚できるオブジェクト
 
     [SerializeField] GameObject vacuumRangeObj;                 //吸い込み範囲のオブジェクト
+
+    [SerializeField] GameObject debuffedAttributeResistanceObj; //デバフ
+
+    [SerializeField] Action<int, int, float, float, Vector3, Vector2, float, bool> OnFollowUpAttack;
+    private int onFollowUpAttackMultipliedAttack;
+    private int onFollowUpAttackFinalAttributeNormalAttack;
+    private float onFollowUpAttackMultipliedAttentionDamage;
+    private float onFollowUpAttackMultipliedAttentionRate;
+    private Vector3 onFollowUpAttackAttackPos;
+    private Vector2 onFollowUpAttackAttackSize;
+    private float onFollowUpAttackKnockBackValue;
+    private bool onFollowUpAttackIsFollowUpAttack;              //追撃トリガー
+
+    private bool isFollowUpAttack = false;                      //追撃トリガー(キャラ5用なので書き換えること)
 
     [SerializeField] GameObject playerArrowObj;                 //矢(など遠距離用)のオブジェクト
     
@@ -296,7 +311,7 @@ public class Player : MonoBehaviour
         {
             moveDirection.Normalize(); // 斜め移動を一定速度にするために正規化
             float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg - 90; // 回転角度を計算
-            transform.Translate(moveDirection * moveSpeed * Time.deltaTime, Space.World); // 移動方向に沿って移動
+            transform.Translate(moveSpeed * Time.deltaTime * moveDirection, Space.World); // 移動方向に沿って移動
         }
         //向きの変更
         if (moveX > 0)
@@ -374,23 +389,12 @@ public class Player : MonoBehaviour
     //地面との接地判定
     private bool IsGrounding()
     {
-        //RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.6f, groundLayer);
-        //Debug.DrawRay(transform.position, Vector2.down * 0.6f, Color.red);
-        float distance = 1.1f;  // BoxCastの距離
-        Vector2 boxSize = new Vector2(0.5f, 0.5f);
-        RaycastHit2D hit = Physics2D.BoxCast(transform.position, boxSize, transform.localEulerAngles.z, Vector2.down, distance, groundLayer);
+        float rayLength = 0.6f;
+        Vector2 direction = transform.right * 0.8f;
+        Vector2 startPos = transform.position + new Vector3(-0.4f, -1.05f, 0);
 
-        // BoxCastの範囲を描画 (四角形の描画)
-        Vector3 topLeft = transform.position + new Vector3(-boxSize.x / 2, boxSize.y / 2, 0);
-        Vector3 topRight = transform.position + new Vector3(boxSize.x / 2, boxSize.y / 2, 0);
-        Vector3 bottomLeft = transform.position + new Vector3(-boxSize.x / 2, -boxSize.y / 2, 0);
-        Vector3 bottomRight = transform.position + new Vector3(boxSize.x / 2, -boxSize.y / 2, 0);
-
-        // ボックスの上下辺を描画
-        Debug.DrawLine(topLeft, topLeft + Vector3.down * distance, Color.red);  // 左側面
-        Debug.DrawLine(topRight, topRight + Vector3.down * distance, Color.red);  // 右側面
-        Debug.DrawLine(bottomLeft, bottomLeft + Vector3.down * distance, Color.red);  // 下辺 (左)
-        Debug.DrawLine(bottomRight, bottomRight + Vector3.down * distance, Color.red);  // 下辺 (右)
+        RaycastHit2D hit = Physics2D.Raycast(startPos, direction, rayLength, groundLayer);
+        Debug.DrawRay(startPos, direction, Color.red);
 
         return hit.collider != null;
     }
@@ -464,7 +468,6 @@ public class Player : MonoBehaviour
             }
 
             StartCoroutine(MoveDash(moveDirection));
-
         }
     }
     //ダッシュ
@@ -519,16 +522,15 @@ public class Player : MonoBehaviour
             {
                 rb2D.AddForce(moveDirection * dashForce, ForceMode2D.Impulse);
             }
-            
 
             if (counter % 2 == 0) 
             {
                 //残像の生成(GetComponentをなんとかする)
-                var afterEffectObjs = Instantiate(afterEffectObj, this.transform.position, this.transform.rotation);
-                afterEffectObjs.transform.localScale = this.transform.localScale;
-                SpriteRenderer afterEffectObjsSpriteRenderer = afterEffectObjs.GetComponent<SpriteRenderer>();
+                var afterEffectObj = Instantiate(this.afterEffectObj, this.transform.position, this.transform.rotation);
+                afterEffectObj.transform.localScale = this.transform.localScale;
+                SpriteRenderer afterEffectObjsSpriteRenderer = afterEffectObj.GetComponent<SpriteRenderer>();
                 afterEffectObjsSpriteRenderer.color = new Color32(50, 150, 200, 100);
-                Destroy(afterEffectObjs, 0.25f);
+                Destroy(afterEffectObj, 0.25f);
             }
 
             timer += Time.deltaTime;
@@ -633,31 +635,68 @@ public class Player : MonoBehaviour
     }
 
     //攻撃範囲の生成(通常やスキル、必殺技など含む全て)
-    //キャラID、倍率計算後の攻撃力、属性、会心ダメージ、会心率、攻撃発生場所、攻撃範囲の大きさ(x,y)、ノックバック量(charIDが抜けているので加えること)
-    public void AttackMaker(int multipliedAttack, int finalAttributeNormalAttack, float multipliedAttentionDamage, float multipliedAttentionRate, Vector3 attackPos, Vector2 attackSize, float knockBackValue)
+    //キャラID、倍率計算後の攻撃力、属性、会心ダメージ、会心率、攻撃発生場所、攻撃範囲の大きさ(x,y)、ノックバック量(charIDが抜けているので加えること)、追撃か(追撃ならtrue、それ以外はfalse)
+    public void AttackMaker(int multipliedAttack, int finalAttributeNormalAttack, float multipliedAttentionDamage, float multipliedAttentionRate, Vector3 attackPos, Vector2 attackSize, float knockBackValue, bool isFollowUpAttack)
     {
-        //char2が確定会心のとき
+        //char2が確定会心のとき(移動させること)
         if (isChar2Attention == true)
         {
             multipliedAttentionRate = 100;
             isChar2Attention = false;
         }
 
+        //追撃
+        /*
+        if (isFollowUpAttack == false) 
+        {
+            OnFollowUpAttack?.Invoke(onFollowUpAttackMultipliedAttack, onFollowUpAttackFinalAttributeNormalAttack, onFollowUpAttackMultipliedAttentionDamage, onFollowUpAttackMultipliedAttentionRate, onFollowUpAttackAttackPos, onFollowUpAttackAttackSize, onFollowUpAttackKnockBackValue, onFollowUpAttackIsFollowUpAttack);
+        }
+        */
+
         var normalAttackRangeObjs = Instantiate(normalAttackRangeObj, attackPos, this.transform.rotation);
         normalAttackRangeObjs.transform.localScale = new Vector3(attackSize.x, attackSize.y, 1.0f);
         NormalAttackRange normalAttackRangeObjsScript = normalAttackRangeObjs.GetComponent<NormalAttackRange>();
-        normalAttackRangeObjsScript.NormalAttack(charId, multipliedAttack, finalAttributeNormalAttack, multipliedAttentionDamage, multipliedAttentionRate, knockBackValue);
+        normalAttackRangeObjsScript.NormalAttack(charId, multipliedAttack, finalAttributeNormalAttack, multipliedAttentionDamage, multipliedAttentionRate, knockBackValue, isFollowUpAttack);
+    }
+
+    //追撃(PlayerArrowObjectsにも単体攻撃があるのでPlayer側の関数で纏めること)
+    public void FollowUpAttack(EnemyHP enemyHpScript) 
+    {
+        //OnFollowUpAttack?.Invoke(onFollowUpAttackMultipliedAttack, onFollowUpAttackFinalAttributeNormalAttack, onFollowUpAttackMultipliedAttentionDamage, onFollowUpAttackMultipliedAttentionRate, onFollowUpAttackAttackPos, onFollowUpAttackAttackSize, onFollowUpAttackKnockBackValue, onFollowUpAttackIsFollowUpAttack);
+        if (isFollowUpAttack == true) //攻撃力を固定にすること
+        {
+            //汎用
+            //SingleAttack(enemyHpScript, multipliedAttack, finalAttribute, multipliedAttentionDamage, multipliedAttentionRate, knockBackValue, isFollowUpAttack);
+            SingleAttack(enemyHpScript, (int)(attack * 0.3f), 6, attentionDamage, attentionRate, 0, true);
+        }
+    }
+
+    //単体攻撃
+    public void SingleAttack(EnemyHP enemyHpScript, int multipliedAttack, int finalAttribute, float multipliedAttentionDamage, float multipliedAttentionRate, float knockBackValue, bool isFollowUpAttack) 
+    {
+        bool isAttentionDamage = false;         //会心ダメージか
+        //会心率の抽選
+        float randomPoint = UnityEngine.Random.value * 100;
+        if (randomPoint <= multipliedAttentionRate)
+        {
+            multipliedAttack = (int)((float)(multipliedAttack) * ((100 + multipliedAttentionDamage) / 100));
+            isAttentionDamage = true;
+        }
+        //攻撃したキャラのID(厳密にするならcharIdを追跡して受け取っても良い)、ダメージ判定のx座標、攻撃力、属性、会心かどうか、追撃かどうか(追撃がtrue)
+        enemyHpScript.EnemyDamage(charId, this.transform.position.x, multipliedAttack, finalAttribute, isAttentionDamage, knockBackValue, isFollowUpAttack);
     }
 
     //回復
     public void Heal(bool isTeamHeal, float healValue) 
     {
+        //全体回復
         if (isTeamHeal == true)
         {
             for (int i = 0; i < 3; i++)
             {
                 if (teamCoutnrollerScript.TeamCurrentHp[i] != 0)
                 {
+                    //自分の回復
                     if (charId == teamCoutnrollerScript.TeamIdData[i])
                     {
                         if (currentHp + Mathf.CeilToInt(healValue) >= maxHp)
@@ -674,6 +713,7 @@ public class Player : MonoBehaviour
                         //引数は攻撃力、属性、会心判定(無)、表記の発生場所(味方の被ダメージに会心ダメージは発生しない)
                         damageNotationObjsScript.DamageNotion(Mathf.CeilToInt(healValue), -1, false, (Vector2)transform.position + new Vector2(0, 0.0f));
                     }
+                    //自分以外の回復
                     else
                     {
                         if (teamCoutnrollerScript.TeamCurrentHp[i] + Mathf.CeilToInt(healValue) >= teamCoutnrollerScript.TeamMaxHp[i])
@@ -693,8 +733,10 @@ public class Player : MonoBehaviour
                 }
             }
         }
+        //単体回復
         else
         {
+            //自分の回復
             if (currentHp + Mathf.CeilToInt(healValue) >= maxHp)
             {
                 currentHp = maxHp;
@@ -715,14 +757,24 @@ public class Player : MonoBehaviour
     //集敵発生場所、集敵範囲、集敵持続時間(秒)
     public void Vacuum(Vector2 vacuumPos, Vector2 vacuumSize, float vacuumDuration) 
     {
-        //vacuumPos = this.transform.position;                //集敵座標
-        //vacuumSize = new Vector2(10.0f, 10.0f);             //集敵範囲
-        //vacuumDuration = 0.5f;                              //集敵の持続時間(秒)
         //吸い込み
         var vacuumRangeObjs = Instantiate(vacuumRangeObj, vacuumPos, this.transform.rotation);
         vacuumRangeObjs.transform.localScale = new Vector3(vacuumSize.x, vacuumSize.y, 1.0f);
         VacuumRange vacuumRangeObjsScript = vacuumRangeObjs.GetComponent<VacuumRange>();
         vacuumRangeObjsScript.Vacuum(vacuumDuration);
+    }
+
+    //属性耐性ダウン
+    //耐性ダウン値(%)、生成位置、デバフ範囲、持続時間がデバフ(時間依存を一瞬で掛けるtrue)かデバフ範囲か(出たら消えるflase)、持続時間、攻撃ID
+    public void DebuffedAttributeResistance(float debuffedAttributeResistance, Vector2 pos, Vector2 size, bool isTypeMoment, float duration, int debuffedId) 
+    {
+        //％を割合変換
+        debuffedAttributeResistance /= 100;
+        //耐性ダウン
+        var debuffedAttributeResistanceObjs = Instantiate(debuffedAttributeResistanceObj, pos, this.transform.rotation);
+        debuffedAttributeResistanceObjs.transform.localScale = new Vector3(size.x, size.y, 1.0f);
+        DebuffedAttributeResistance debuffedAttributeResistanceObjsScript = debuffedAttributeResistanceObjs.GetComponent<DebuffedAttributeResistance>();
+        debuffedAttributeResistanceObjsScript.Debuffed(debuffedAttributeResistance, isTypeMoment, duration, charId, debuffedId);
     }
 
     //プレイヤーの召喚物(設置スキル)
@@ -748,7 +800,6 @@ public class Player : MonoBehaviour
         PlayerArrowObject playerArrowObjectScript = playerArrowObjs.GetComponent<PlayerArrowObject>();
         playerArrowObjectScript.Arrow(GetComponent<Player>(), charId, attackType, multipliedAttack, arrowAttribute, arrowAttentionDamage, arrowAttentionRate, arrowAttackRangeSize, arrowKnockBackValue, arrowLaunchAngle);
     }
-    
 
     //通常攻撃(攻撃力,属性)
     private void NormalAttack(int attack, int attributeNormalAttack)
@@ -758,13 +809,13 @@ public class Player : MonoBehaviour
             //右向きと左向きで発生位置を変更
             float normalAttackDirection = 0.5f;
             if (isLookRight == false) 
-            { 
+            {
                 normalAttackDirection = -0.5f;
             }
             Vector3 normalAttackPos = this.transform.position;
             normalAttackPos.x += normalAttackDirection;
 
-            AttackMaker(attack, attributeNormalAttack, attentionDamage, attentionRate, normalAttackPos, new Vector2(2.0f, 2.0f), 100);
+            AttackMaker(attack, attributeNormalAttack, attentionDamage, attentionRate, normalAttackPos, new Vector2(2.0f, 2.0f), 100, false);
         }
     }
 
@@ -809,7 +860,7 @@ public class Player : MonoBehaviour
         {
             if (i <= 1)
             {
-                AttackMaker((int)(attack * 2.4f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(12.5f, 12.5f), 120);
+                AttackMaker((int)(attack * 2.4f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(12.5f, 12.5f), 120, false);
 
                 for (int j = 0; j < 5; j++)
                 {
@@ -818,7 +869,7 @@ public class Player : MonoBehaviour
             }
             else
             {
-                AttackMaker((int)(attack * 0.8f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(12.5f, 12.5f), 40);
+                AttackMaker((int)(attack * 0.8f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(12.5f, 12.5f), 40, false);
             }
 
             for (int j = 0; j < 5; j++)
@@ -836,7 +887,7 @@ public class Player : MonoBehaviour
         {
             if (i == 0)
             {
-                AttackMaker((int)(attack * 12.5f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(7.5f, 7.5f), 1200);
+                AttackMaker((int)(attack * 12.5f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(7.5f, 7.5f), 1200, false);
 
                 for (int j = 0; j < 5; j++)
                 {
@@ -845,7 +896,7 @@ public class Player : MonoBehaviour
             }
             else
             {
-                AttackMaker((int)(attack * 0.2f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(15.0f, 7.5f), 10);
+                AttackMaker((int)(attack * 0.2f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(15.0f, 7.5f), 10, false);
             }
 
             for (int j = 0; j < 20; j++)
@@ -876,15 +927,42 @@ public class Player : MonoBehaviour
     //キャラIDが5のキャラの必殺技
     IEnumerator Char5SpecialMove()
     {
-        AttackMaker((int)(attack * 3.6f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(7.5f, 7.5f), 300);
+        AttackMaker((int)(attack * 3.6f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(7.5f, 7.5f), 300, false);
+        /*
+        onFollowUpAttackMultipliedAttack = (int)(attack * 0.3f);
+        onFollowUpAttackFinalAttributeNormalAttack = attribute;
+        onFollowUpAttackMultipliedAttentionDamage = attentionDamage;
+        onFollowUpAttackMultipliedAttentionRate = attentionRate;
+        onFollowUpAttackAttackPos = this.transform.position;
+        onFollowUpAttackAttackSize = new Vector2(7.5f, 7.5f);
+        onFollowUpAttackKnockBackValue = 0;
+        onFollowUpAttackIsFollowUpAttack = true;
+        OnFollowUpAttack += AttackMaker;
+        */
+        float timer1 = 0;
+        while (timer1 <= 0.1f)
+        {
+            timer1 += Time.deltaTime;
+            yield return null;
+        }
 
+        isFollowUpAttack = true;
+        float timer2 = 0;
+        while (timer2 <= 14.9f)
+        {
+            timer2 += Time.deltaTime;
+            yield return null;
+        }
+        isFollowUpAttack = false;
+        //OnFollowUpAttack -= AttackMaker;
         yield break;
     }
 
     //キャラIDが6のキャラの必殺技
     IEnumerator Char6SpecialMove()
     {
-
+        DebuffedAttributeResistance(20, transform.position, new Vector2(12.0f, 12.0f), false, 12.5f, 1);
+        AttackMaker((int)(attack * 14.5f), 3, attentionDamage, attentionRate, this.transform.position, new Vector2(5.5f, 5.5f), 800, false);
         yield break;
     }
 
@@ -959,7 +1037,7 @@ public class Player : MonoBehaviour
         //集敵効果
         Vacuum(this.transform.position, new Vector2(10, 10), 0.5f);
         //攻撃
-        AttackMaker((int)(attack * 4.5f), 3, attentionDamage, attentionRate, this.transform.position, new Vector2(10.0f, 10.0f), 0);
+        AttackMaker((int)(attack * 4.5f), 3, attentionDamage, attentionRate, this.transform.position, new Vector2(10.0f, 10.0f), 0, false);
 
         yield break;
     }
@@ -985,10 +1063,11 @@ public class Player : MonoBehaviour
     //キャラIDが6のキャラのスキル
     IEnumerator Char6Skill()
     {
+        float healValue = maxHp * 0.05f;
         float timer = 0;
         for(int i = 0; i < 6; i++) 
         {
-            Heal(true, maxHp * 0.05f);
+            Heal(true, healValue);
             while (timer <= 0.5f) 
             {
                 timer += Time.deltaTime;
@@ -1167,7 +1246,6 @@ public class Player : MonoBehaviour
         {
             currentStamina++;
             staminaRecoveryCounter = 0;
-            Debug.Log(currentStamina);
         }
     }
 
@@ -1301,4 +1379,6 @@ public class Player : MonoBehaviour
     public float AttentionDamage => attentionDamage;
     //会心率受け渡し
     public float AttentionRate => attentionRate;
+    //右を向いているかの判定の受け渡し
+    public bool IsLookRight => isLookRight;
 }

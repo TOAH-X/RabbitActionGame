@@ -11,6 +11,7 @@ public class NormalAttackRange : MonoBehaviour
     private int destroyCounter = 0;                             //消滅カウンター
     private int normalAttackAttribute = 0;                      //攻撃属性
     private float knockBackValue;                               //ノックバック量
+    private bool isFollowUpAttack;                              //追撃かどうか
 
     // Start is called before the first frame update
     void Start()
@@ -30,12 +31,13 @@ public class NormalAttackRange : MonoBehaviour
     }
 
     //通常攻撃
-    public void NormalAttack(int charId, int attack, int attribute, float attentionDamage, float attentionRate, float charKnockBackValue)
+    public void NormalAttack(int charId, int attack, int attribute, float attentionDamage, float attentionRate, float charKnockBackValue,bool charIsFollowUpAttack)
     {
         attackCharId= charId;
         normalAttack = attack;
         normalAttackAttribute = attribute;
         knockBackValue = charKnockBackValue;
+        isFollowUpAttack = charIsFollowUpAttack;
 
         isAttentionDamage = false;
 
@@ -59,8 +61,8 @@ public class NormalAttackRange : MonoBehaviour
             //ダメージを与える処理
             if (enemyHpScript != null) 
             {
-                //攻撃したキャラのID、ダメージ判定のx座標、攻撃力、属性、会心かどうか
-                enemyHpScript.EnemyDamage(attackCharId, this.transform.position.x, normalAttack, normalAttackAttribute, isAttentionDamage, knockBackValue);
+                //攻撃したキャラのID、ダメージ判定のx座標、攻撃力、属性、会心かどうか、追撃かどうか
+                enemyHpScript.EnemyDamage(attackCharId, this.transform.position.x, normalAttack, normalAttackAttribute, isAttentionDamage, knockBackValue, isFollowUpAttack);
                 //Debug.Log("NormalAttack" + normalAttack);
             }
         }

@@ -161,6 +161,7 @@ MonoBehaviour:
   knockBackGauge: 0
   KnockBackLimit: 1000
   knockBackCoolTime: 60
+  debuffedAttributeResistance: 0
 --- !u!114 &8765850214954248449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -406,6 +407,7 @@ MonoBehaviour:
   thisObjName: 
   player: {fileID: 0}
   enemyHp: {fileID: 0}
+  teamCoutnroller: {fileID: 0}
 --- !u!114 &8765850214245741313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -428,6 +430,7 @@ MonoBehaviour:
   thisObjName: 
   player: {fileID: 0}
   enemyHp: {fileID: 0}
+  teamCoutnroller: {fileID: 0}
 --- !u!1 &8765850215764194104
 GameObject:
   m_ObjectHideFlags: 0

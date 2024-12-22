@@ -2,6 +2,7 @@ using System.Buffers.Text;
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CharInformationController : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class CharInformationController : MonoBehaviour
     [SerializeField] TextMeshProUGUI skillExplanationText;          //スキル説明テキスト
     [SerializeField] TextMeshProUGUI specialMoveNameText;           //必殺技名テキスト
     [SerializeField] TextMeshProUGUI specialMoveExplanationText;    //必殺技説明テキスト
+
+    [SerializeField] Image charFullBodyImage;                       //立ち絵
 
     [SerializeField] GameObject charInformationBackGround;          //キャラ情報の背景
 
@@ -65,7 +68,6 @@ public class CharInformationController : MonoBehaviour
                 charInformationBackGround.SetActive(false);
             }
         }
-        
 
         charId = playerScript.CharId;
         CharDbReference();
@@ -84,6 +86,7 @@ public class CharInformationController : MonoBehaviour
         skillExplanation = dB_charData.charData[charId].skillExplanation;                   //スキル説明
         specialMoveName = dB_charData.charData[charId].specialMoveName;                     //必殺技名
         specialMoveExplanation = dB_charData.charData[charId].specialMoveExplanation;       //必殺技説明
+        charFullBodyImage.sprite = dB_charData.charData[charId].charFullBodyImage;          //立ち絵
     }
 
     //キャラ情報をテキストに反映
@@ -136,6 +139,5 @@ public class CharInformationController : MonoBehaviour
         skillExplanationText.text = skillExplanation;                                           //スキル説明テキスト
         specialMoveNameText.text = "必殺技「" + specialMoveName + "」";                         //必殺技名テキスト
         specialMoveExplanationText.text = specialMoveExplanation;                               //必殺技説明テキスト
-
     }
 }
