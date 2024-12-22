@@ -81,13 +81,15 @@ public class EnemyHP : MonoBehaviour
     //被ダメージ処理
     public void EnemyDamage(int attackCharId, float attackRangePos, int damage, int attribute, bool isAttentionDamage, float knockBackValue, bool isFollowUpAttack)
     {
+        Debug.Log("ダメージ" + damage);
         //倍率(書き換えること)
         float attributeResistance = (float)((float)GameSystemUtility.CalcDamage(damage, enemyAttribute, attribute, () => StartCoroutine(PairAnnihilationDamage(damage))) /(float) damage);
-        //下の処理と代替可能
-        damage = GameSystemUtility.CalcDamage(damage, enemyAttribute, attribute, () => StartCoroutine(PairAnnihilationDamage(damage)));
+        Debug.Log("耐性"+attributeResistance+"ダメージ"+damage);
+        //上と重複した処理なので消した。詳細のダメージ計算の検証を取ること。
+        //damage = GameSystemUtility.CalcDamage(damage, enemyAttribute, attribute, () => StartCoroutine(PairAnnihilationDamage(damage)));
         //属性耐性の倍率から計算
         damage = Mathf.CeilToInt(damage * (attributeResistance + Mathf.Sqrt(debuffedAttributeResistance * (Mathf.Sqrt(1 / attributeResistance)))));
-
+        Debug.Log("倍率"+ (attributeResistance + Mathf.Sqrt(debuffedAttributeResistance * (Mathf.Sqrt(1 / attributeResistance)))));
         //属性倍率判定、仮置き(敵味方共通のスクリプトを作ること)
         //damage = AttributeCalculator(damage, attribute);
         enemyCurrentHp -= damage;
@@ -142,7 +144,7 @@ public class EnemyHP : MonoBehaviour
             
         }
 
-        //Debug.Log("キャラID" + attackCharId + "　与えたダメージ" + damage);
+        Debug.Log("自身の属性" + enemyAttribute + "　キャラID" + attackCharId + "　与えたダメージ" + damage);
     }
 
     /*

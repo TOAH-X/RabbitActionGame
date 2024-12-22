@@ -962,6 +962,12 @@ public class Player : MonoBehaviour
     IEnumerator Char6SpecialMove()
     {
         DebuffedAttributeResistance(20, transform.position, new Vector2(12.0f, 12.0f), false, 12.5f, 1);
+        float timer1 = 0;
+        while (timer1 <= 0.1f)
+        {
+            timer1 += Time.deltaTime;
+            yield return null;
+        }
         AttackMaker((int)(attack * 14.5f), 3, attentionDamage, attentionRate, this.transform.position, new Vector2(5.5f, 5.5f), 800, false);
         yield break;
     }
