@@ -94,15 +94,7 @@ public class PlayerArrowObject : MonoBehaviour
         //単体直接攻撃用
         if (arrowAttackRangeSize.x == 0 && arrowAttackRangeSize.y == 0) 
         {
-            //会心率の抽選
-            float randomPoint = Random.value * 100;
-            if (randomPoint <= arrowAttentionRate)
-            {
-                arrowAttack = (int)((float)(arrowAttack) * ((100 + arrowAttentionDamage) / 100));
-                isAttentionDamage = true;
-            }
-            //攻撃したキャラのID、ダメージ判定のx座標、攻撃力、属性、会心かどうか、追撃かどうか(基本的に追撃ではないのでfalse)
-            enemyHpScript.EnemyDamage(arrowCharId, this.transform.position.x, arrowAttack, arrowAttribute, isAttentionDamage, arrowKnockBackValue, false);
+            playerScript.SingleAttack(enemyHpScript, arrowAttack, arrowAttribute, arrowAttentionDamage, arrowAttentionRate, arrowKnockBackValue, true);
         }
         //範囲攻撃
         else

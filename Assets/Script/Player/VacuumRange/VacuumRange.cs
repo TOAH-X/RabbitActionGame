@@ -6,7 +6,7 @@ using UnityEngine;
 public class VacuumRange : MonoBehaviour
 {
     private float vacuumDuration;                       //‹zˆøŒø‰ÊŠÔ
-    private float durationTimer = 0;                    //‹zˆøŠÔ—pƒ^ƒCƒ}[
+    private float vacuumPower;                          //‹zˆø—Í(•W€‚Í0.1)
 
     // Start is called before the first frame update
     void Start()
@@ -18,17 +18,18 @@ public class VacuumRange : MonoBehaviour
     void Update()
     {
         //©g‚ÌÁ–Å
-        durationTimer += Time.deltaTime;
-        if (vacuumDuration <= durationTimer) 
+        vacuumDuration -= Time.deltaTime;
+        if (vacuumDuration <= 0) 
         {
             Destroy(this.gameObject);
         }
     }
 
-    //’ÊíUŒ‚
-    public void Vacuum(float duration)
+    //‹zû
+    public void Vacuum(float duration, float power)
     {
         vacuumDuration = duration;
+        vacuumPower = power;
     }
 
     //“G‚Æ‚ÌÚG
@@ -41,7 +42,7 @@ public class VacuumRange : MonoBehaviour
             if (enemyHpScript != null)
             {
                 //‹zˆøŒø‰Ê‚ÌÀ•W
-                enemyHpScript.EnemyVacuum(this.transform.position.x);
+                enemyHpScript.EnemyVacuum((Vector2)this.transform.position, vacuumDuration, vacuumPower);
             }
         }
     }

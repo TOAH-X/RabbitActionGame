@@ -47,10 +47,8 @@ public class SkillRechargeTimeCountroller : MonoBehaviour
             else if (thisObjName == "SpecialMoveRechargeTime")
             {
                 //”ñ•\Ž¦
-                thisText.text = "Q";
+                thisText.text = "R";
             }
-                
         }
-            
     }
 }

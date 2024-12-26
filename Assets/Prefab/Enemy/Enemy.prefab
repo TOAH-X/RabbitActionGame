@@ -154,7 +154,7 @@ MonoBehaviour:
   enemyMaxHp: 300000
   enemyCurrentHp: 0
   enemyAttribute: 6
-  damageNotationObj: {fileID: 7114389648310850983, guid: 796f268acd77a8a46b40c841c97b1926, type: 3}
+  damageNotationObj: {fileID: 7443923937168970963, guid: 2cbb13b909f4fa1499e9a0c2049f956b, type: 3}
   canvasTransform: {fileID: 0}
   enemyActionScript: {fileID: 8765850214954248449}
   latestAttackCharId: 0

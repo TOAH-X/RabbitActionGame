@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.VisualScripting;
 
 public class EnemyHP : MonoBehaviour
 {
@@ -46,7 +47,7 @@ public class EnemyHP : MonoBehaviour
         enemyCurrentHp = enemyMaxHp;
 
         //Canvasを見つける(ダメージ表示用など)
-        canvasTransform = GameObject.Find("Canvas").transform;
+        canvasTransform = GameObject.Find("DamageCanvas").transform;
         //プレイヤーを見つける(余力があれば軽い処理に書き換えること)
         playerObj = GameObject.Find("Player");
         playerScript = playerObj.gameObject.GetComponent<Player>();
@@ -246,8 +247,10 @@ public class EnemyHP : MonoBehaviour
     }
 
     //吸引用
-    public void EnemyVacuum(float attackRangePos) 
+    public void EnemyVacuum(Vector2 vacuumPos, float vacuumDuration, float vacuumPower) 
     {
+        /*
+        //attackRangePosはvacuumPos.xに書き換えると作動する
         bool isKnockBackRight;
         //右に吹き飛ぶ
         if (attackRangePos >= this.transform.position.x)
@@ -262,14 +265,35 @@ public class EnemyHP : MonoBehaviour
             isKnockBackRight = false;
             enemyActionScript.EnemyKnockBack(isKnockBackRight);
             Debug.Log("左に吸われる");
+        }*/
+        StartCoroutine(Vacuum(vacuumPos, vacuumDuration, vacuumPower));
+    }
+
+    IEnumerator Vacuum(Vector2 vacuumPos,float vacuumDuration, float vacuumPower) 
+    {
+        float timer = 0;
+        while (timer <= vacuumDuration) 
+        {
+            //目標地点まで移動
+            if (Vector2.Distance(vacuumPos, (Vector2)transform.position) > 0.2)
+            {
+                //向きの計算
+                Vector2 distance = (vacuumPos - (Vector2)transform.position).normalized;
+
+                transform.position += (Vector3)distance * vacuumPower;
+                //向きの計算
+                distance = (vacuumPos - (Vector2)transform.position).normalized;
+            }
+            timer += Time.deltaTime;
+            yield return null;
         }
+        yield break;
     }
 
     //属性耐性ダウン
     public void DebuffedAttributeResistance(float attributeResistance, bool isTypeMoment, float duration, int debuffedCharId, int debuffedId)
     {
         debuffedAttributeResistance = attributeResistance;
-        Debug.Log(debuffedAttributeResistance+"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     }
 
     //enemyMaxHp参照用(getset)

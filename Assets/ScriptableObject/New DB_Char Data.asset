@@ -153,3 +153,43 @@ MonoBehaviour:
     baseMoveSpeed: 3
     charIcon: {fileID: 21300000, guid: dd78386000192b54fbfd5c2541e915bf, type: 3}
     charFullBodyImage: {fileID: 21300000, guid: dd78386000192b54fbfd5c2541e915bf, type: 3}
+  - charId: 7
+    charName: "\u30A2\u30FC\u30B7\u30E3"
+    rarity: 5
+    attribute: 6
+    weaponType: 0
+    baseHp: 14329
+    buffHp: 0
+    baseAttack: 407
+    characteristicName: "\u81E8\u754C\u5316"
+    characteristicExplanation: "\u5473\u65B9\u304C\u81EA\u5206\u4EE5\u5916\u751F\u5B58\u3057\u3066\u3044\u306A\u3044\u3068\u304D\u3001\u81EA\u8EAB\u306E\u30B9\u30AD\u30EB\u306E\u30A8\u30FC\u30C6\u30EB\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8\u306E\u5BFE\u6D88\u6EC5\u30C0\u30E1\u30FC\u30B8\u304C\u865A\u7A7A\u5C5E\u6027\u306B\u306A\u308B\u3002"
+    skillName: "\u751F\u4F4F\u7570\u6EC5"
+    skillExplanation: "\u524D\u65B9\u306B\u865A\u7A7A\u30C0\u30E1\u30FC\u30B8(HP30%)\u30C0\u30E1\u30FC\u30B8\u3092\u767A\u751F\u3002"
+    specialMoveName: "\u6F8C\u5C3D\u7070\u6EC5"
+    specialMoveExplanation: "\u753B\u9762\u4E0A\u3092\u5E7D\u4F53\u304C\u9AD8\u901F\u79FB\u52D5\u3057\u901A\u5E38\u653B\u6483\u3092\u3057\u305F\u30BF\u30A4\u30DF\u30F3\u30B0\u3067\u30A8\u30FC\u30C6\u30EB\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8\u30925\u3064\u751F\u6210\u3002\u7834\u58CA\u3057\u305F\u30A8\u30FC\u30C6\u30EB\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8\u306E\u6570\u306B\u5FDC\u3058\u3066\u81EA\u8EAB\u306EHP\u3092\u56DE\u5FA9(1\u500B\u3042\u305F\u308A\u653B\u6483\u529B180%)\u3002"
+    maxSkillRecharge: 5
+    maxSpecialMoveEnergy: 0
+    maxSpecialMoveRecharge: 16
+    baseMoveSpeed: 3
+    charIcon: {fileID: 0}
+    charFullBodyImage: {fileID: 0}
+  - charId: 8
+    charName: "\u30C0\u30FC\u30C4"
+    rarity: 5
+    attribute: 6
+    weaponType: 0
+    baseHp: 1
+    buffHp: 0
+    baseAttack: 1
+    characteristicName: 
+    characteristicExplanation: 
+    skillName: 
+    skillExplanation: 
+    specialMoveName: 
+    specialMoveExplanation: 
+    maxSkillRecharge: 5
+    maxSpecialMoveEnergy: 0
+    maxSpecialMoveRecharge: 16
+    baseMoveSpeed: 3
+    charIcon: {fileID: 0}
+    charFullBodyImage: {fileID: 0}
