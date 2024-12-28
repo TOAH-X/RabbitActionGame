@@ -38,5 +38,9 @@ public class ChangeTeamIcon : MonoBehaviour, IPointerClickHandler
         Image charFullBodyImageObjSprite = charFullBodyImageObj.GetComponent<Image>();
         ChangeTeamController changeTeamControllerObjScript = changeTeamControllerObj.GetComponent<ChangeTeamController>();
         charFullBodyImageObjSprite.sprite = changeTeamControllerObjScript.CharDbReferenceCharFullBodyImage(charId);
+        //TeamMemberオブジェクトの取得
+        GameObject teamMemberObj = changeTeamUIObj.transform.Find("TeamMember").gameObject;
+        ChangeTeamTeamMemberController teamMemberObjScript = teamMemberObj.GetComponent<ChangeTeamTeamMemberController>();
+        teamMemberObjScript.ChangeMember(charId);
     }
 }

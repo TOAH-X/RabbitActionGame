@@ -11,6 +11,7 @@ public class ChangeTeamController : MonoBehaviour
 {
     [SerializeField] GameObject contentObj;         //contentオブジェクト
     [SerializeField] GameObject charIconObj;        //charIcon(BackGround)オブジェクト
+    [SerializeField] ChangeTeamTeamMemberController changeTeamTeamMemberControllerScript;   //ChangeTeamTeamMemberControllerスクリプト
 
     private Sprite charIcon;                        //キャラアイコン
     private Sprite charFullBodyImage;               //キャラの立ち絵
@@ -24,10 +25,33 @@ public class ChangeTeamController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        foreach (var element in dB_charData.charData)  
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    //編成変更画面を開いたとき
+    public void OpenChengTeam() 
+    {
+        //アイコンのセット
+        SetIcon();
+        //TeamMemberの初期化
+        changeTeamTeamMemberControllerScript.ChangeTeamMember();
+        
+    }
+
+    //スクリプトビューにアイコンをセット
+    public void SetIcon() 
+    {
+        //スクリプトビューにアイコンをセット
+        foreach (var element in dB_charData.charData)
         {
             //0はデモキャラ用なので除外
-            if (element.charId != 0)  
+            if (element.charId != 0)
             {
                 CharDbReference(element.charId);
                 var charIconObjs = Instantiate(charIconObj, this.transform.position, this.transform.rotation);
@@ -40,12 +64,6 @@ public class ChangeTeamController : MonoBehaviour
                 charIconObjsScript.SetData(element.charId);
             }
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     //キャラ情報をデータベースから参照

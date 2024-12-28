@@ -85,7 +85,7 @@ public class TeamCoutnroller : MonoBehaviour
         //チーム変更
         if (Input.GetKey(KeyCode.Z)) 
         {
-            ChangeTeam();
+            //ChangeTeam();
         }
 
         GetPlayerData(currentChar);
@@ -222,11 +222,11 @@ public class TeamCoutnroller : MonoBehaviour
     }
 
     //チーム編成変更
-    public void ChangeTeam() 
+    public void ChangeTeam(int[] updateTeam) 
     {
-        teamIdData[0] = 1;
-        teamIdData[1] = 2;
-        teamIdData[2] = 3;
+        teamIdData[0] = updateTeam[0];
+        teamIdData[1] = updateTeam[1];
+        teamIdData[2] = updateTeam[2];
 
         GetPlayerData(currentChar);
         SetPlayerData(0);
