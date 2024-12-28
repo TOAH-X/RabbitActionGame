@@ -17553,6 +17553,7 @@ GameObject:
   - component: {fileID: 1605973643}
   - component: {fileID: 1605973645}
   - component: {fileID: 1605973644}
+  - component: {fileID: 1605973646}
   m_Layer: 5
   m_Name: TeamMember
   m_TagString: Untagged
@@ -17621,6 +17622,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1605973642}
   m_CullTransparentMesh: 1
+--- !u!114 &1605973646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1605973642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebad4e0d8d4e2734598ffb81f9c81f8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  teamCoutnrollerScript: {fileID: 1463175911}
+  TeamChar1: {fileID: 0}
+  TeamChar2: {fileID: 0}
+  TeamChar3: {fileID: 0}
 --- !u!1 &1625248907
 GameObject:
   m_ObjectHideFlags: 0
