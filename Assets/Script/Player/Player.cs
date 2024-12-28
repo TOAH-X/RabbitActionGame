@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -97,6 +98,8 @@ public class Player : MonoBehaviour
     //攻撃に関して、貫通するかと攻撃の寿命の項目を加えること(NormalAttackRangeでの振る舞いを変更する)
     //攻撃を関数にしておく、必要な引数を纏めること
 
+    [Header("基礎攻撃バフ")]
+    [SerializeField] int baseAttackBuff = 0;                    //基礎攻撃バフ(数値)
     [Header("攻撃バフ")]
     [SerializeField] float attackBuff = 1.0f;                   //攻撃バフ(％)
     [Header("HPバフ")]
@@ -161,9 +164,11 @@ public class Player : MonoBehaviour
         //Debug.Log("FPS:" + fps);
 
         //攻撃力計算
-        attack = Mathf.CeilToInt((float)(baseAttack * attackBuff) * damageBuff);
+        attack = Mathf.CeilToInt((float)((baseAttack + baseAttackBuff) * attackBuff) * damageBuff);
         //HP計算
         maxHp = Mathf.CeilToInt(baseHp * hpBuff);
+        //基礎攻撃のリフレッシュ
+        baseAttackBuff = 0;
         //攻撃力バフのリフレッシュ
         attackBuff = 1.0f;
         //HPバフのリフレッシュ
@@ -296,8 +301,6 @@ public class Player : MonoBehaviour
 
         //スタミナゲージの追従
         staminaNotationObj.transform.position = this.transform.position + new Vector3(0, -1.5f, 0);
-
-        
     }
 
     //移動処理
@@ -820,71 +823,59 @@ public class Player : MonoBehaviour
 
             if (charId == 1)
             {
-                StartCoroutine(Char1SpecialMove());
+                Char1SpecialMove();
             }
             else if (charId == 2)
             {
-                StartCoroutine(Char2SpecialMove());
+                Char2SpecialMove();
             }
             else if (charId == 3)
             {
-                StartCoroutine(Char3SpecialMove());
+                Char3SpecialMove();
             }
             else if (charId == 4)
             {
-                StartCoroutine(Char4SpecialMove());
+                Char4SpecialMove();
             }
             else if (charId == 5)
             {
-                StartCoroutine(Char5SpecialMove());
+                Char5SpecialMove();
             }
             else if (charId == 6)
             {
-                StartCoroutine(Char6SpecialMove());
+                Char6SpecialMove();
             }
         }
     }
 
     //キャラIDが1のキャラの必殺技
-    IEnumerator Char1SpecialMove()
+    async public void Char1SpecialMove()
     {
         for (int i = 0; i < 10; i++)
         {
             if (i <= 1)
             {
                 AttackMaker((int)(attack * 2.4f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(12.5f, 12.5f), 120, false);
-                float timer1 = 0;
-                while (timer1 <= 0.1f)
-                {
-                    timer1 += Time.deltaTime;
-                    yield return null;
-                }
+                await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
             }
             else
             {
                 AttackMaker((int)(attack * 0.8f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(12.5f, 12.5f), 40, false);
             }
-            float timer2 = 0;
-            while (timer2 <= 0.1f)
-            {
-                timer2 += Time.deltaTime;
-                yield return null;
-            }
+            await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
         }
-        yield break;
     }
 
     //キャラIDが2のキャラの必殺技
-    IEnumerator Char2SpecialMove()
+    async public void Char2SpecialMove()
     {
-        float timer3 = 0;
-        rb2D.AddForce(new Vector2(0, 10f), ForceMode2D.Impulse);
-        while (timer3 <= 0.5f) 
-        {
-            timer3 += Time.deltaTime;
-            yield return null;
-        }
+        rb2D.AddForce(new Vector2(0,7.5f), ForceMode2D.Impulse);
+        
+        await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
+        
         rb2D.bodyType = RigidbodyType2D.Static;
+        //〇秒掛けて1回転のように記述
+        /*
         float angle = 360;
         float timer = 0;
         while (timer < 1)
@@ -893,85 +884,56 @@ public class Player : MonoBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
-        this.transform.Rotate(0, 0, 0);
+        */
+        this.transform.eulerAngles = new Vector3(0, 0, 0);
         for (int i = 0; i < 10; i++)
         {
             if (i == 0)
             {
                 AttackMaker((int)(attack * 12.5f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(7.5f, 7.5f), 1200, false);
-                float timer1 = 0;
-                while (timer1 <= 0.1f) 
-                {
-                    timer1 += Time.deltaTime;
-                    yield return null;
-                } 
+                await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
             }
             else
             {
                 AttackMaker((int)(attack * 0.2f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(15.0f, 7.5f), 10, false);
             }
-            float timer2 = 0;
-            while (timer2 <= 0.3f)
-            {
-                timer2 += Time.deltaTime;
-                yield return null;
-            }
+            await UniTask.Delay(TimeSpan.FromSeconds(0.3f));
         }
         rb2D.bodyType = RigidbodyType2D.Dynamic;
-
-        yield break;
     }
 
     //キャラIDが3のキャラの必殺技
-    IEnumerator Char3SpecialMove()
+    public void Char3SpecialMove()
     {
         PlayerSummonObjects(10, 0, this.transform.position, new Vector2(0.5f, 0.5f));
-
-        yield break;
     }
 
     //キャラIDが4のキャラの必殺技
-    IEnumerator Char4SpecialMove()
+    public void Char4SpecialMove()
     {
         PlayerSummonObjects(10, 0, this.transform.position, new Vector2(15.0f, 15.0f));
-
-        yield break;
     }
 
     //キャラIDが5のキャラの必殺技
-    IEnumerator Char5SpecialMove()
+    async public void Char5SpecialMove()
     {
         AttackMaker((int)(attack * 3.6f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(7.5f, 7.5f), 300, false);
-        float timer1 = 0;
-        while (timer1 <= 0.1f)
-        {
-            timer1 += Time.deltaTime;
-            yield return null;
-        }
+
+        await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
 
         isFollowUpAttack = true;
-        float timer2 = 0;
-        while (timer2 <= 14.9f)
-        {
-            timer2 += Time.deltaTime;
-            yield return null;
-        }
+        
+        await UniTask.Delay(TimeSpan.FromSeconds(15.0f));
+
         isFollowUpAttack = false;
-        yield break;
     }
 
     //キャラIDが6のキャラの必殺技
-    IEnumerator Char6SpecialMove()
+    async public void Char6SpecialMove()
     {
         DebuffedAttributeResistance(20, transform.position, new Vector2(12.0f, 12.0f), false, 12.5f, 1);
-        float timer1 = 0;
-        while (timer1 <= 0.1f)
-        {
-            timer1 += Time.deltaTime;
-            yield return null;
-        }
+        await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
         AttackMaker((int)(attack * 14.5f), 3, attentionDamage, attentionRate, this.transform.position, new Vector2(5.5f, 5.5f), 800, false);
-        yield break;
     }
 
     //スキル
@@ -983,109 +945,86 @@ public class Player : MonoBehaviour
 
             if (charId == 1)
             {
-                StartCoroutine(Char1Skill());
+                Char1Skill();
             }
             else if (charId == 2)
             {
-                StartCoroutine(Char2Skill());
+                Char2Skill();
             }
             else if (charId == 3)
             {
-                StartCoroutine(Char3Skill());
+                Char3Skill();
             }
             else if (charId == 4)
             {
-                StartCoroutine(Char4Skill());
+                Char4Skill();
             }
             else if (charId == 5)
             {
-                StartCoroutine(Char5Skill());
+                Char5Skill();
             }
             else if (charId == 6)
             {
-                StartCoroutine(Char6Skill());
+                Char6Skill();
             }
         }
     }
 
     //キャラIDが1のキャラのスキル
-    IEnumerator Char1Skill()
+    async public void Char1Skill()
     {
-        //5.0秒間通常攻撃をエーテル属性に変化
+        //5.0秒間通常攻撃をエーテル属性に変化(バグ対応をすること(控えに戻ったらキャンセル))
         normalAttackAttribute = 5;
 
-        float timer = 0;
-        //現状では登場キャラ変更時にバグが発生するので修正すること(キャラ変更時に属性変更を強制無効化させる)
-        while (timer <= 7.0)  
-        {
-            timer += Time.deltaTime;
-            yield return null;
-        }
+        await UniTask.Delay(TimeSpan.FromSeconds(7.0f));
 
         //通常攻撃を物理属性に戻す
         normalAttackAttribute = 0;
-
-        yield break;
     }
 
     //キャラIDが2のキャラのスキル
-    IEnumerator Char2Skill()
+    public void Char2Skill()
     {
         //HP半減(切り上げ)
         currentHp = (int)Mathf.Ceil((float)(currentHp) / 2);
         //次の攻撃が確定会心
         isChar2Attention = true;
-
-        yield break;
     }
 
     //キャラIDが3のキャラのスキル
-    IEnumerator Char3Skill()
+    public void Char3Skill()
     {
         //集敵効果
         Vacuum(this.transform.position, new Vector2(12.5f, 12.5f), 0.5f, 0.1f);
         //攻撃
         AttackMaker((int)(attack * 4.5f), 3, attentionDamage, attentionRate, this.transform.position, new Vector2(10.0f, 10.0f), 0, false);
-
-        yield break;
     }
 
     //キャラIDが4のキャラのスキル
-    IEnumerator Char4Skill()
+    public void Char4Skill()
     {
         for(int i = 0; i < 9; i++) 
         {
             Arrow(i + 1, (int)(attack * 0.7f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), new Vector2(1.0f, 1.0f), 10, 0);
         }
-        
-        yield break;
     }
 
     //キャラIDが5のキャラのスキル
-    IEnumerator Char5Skill()
+    public void Char5Skill()
     {
         //集敵効果
         Vacuum(this.transform.position, new Vector2(8, 8), 5.0f, 0.1f);
-
-        yield break;
     }
 
     //キャラIDが6のキャラのスキル
-    IEnumerator Char6Skill()
+    async public void Char6Skill()
     {
         float healValue = maxHp * 0.05f;
-        float timer = 0;
         for(int i = 0; i < 6; i++) 
         {
             Heal(true, healValue);
-            while (timer <= 0.5f) 
-            {
-                timer += Time.deltaTime;
-                yield return null;
-            }
-            timer = 0;
+            await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
         }
-        yield break;
     }
 
     //特性
@@ -1096,41 +1035,39 @@ public class Player : MonoBehaviour
 
         if (charId == 1)
         {
-            //StartCoroutine(Char1Characteristic());
+            //Char1Characteristic();
         }
         if (charId == 2)
         {
-            StartCoroutine(Char2Characteristic());
+            Char2Characteristic();
         }
         if (teamId.Contains(3)) //控えから発動可能 
         {
-            StartCoroutine(Char3Characteristic());
+            Char3Characteristic();
         }
         if (teamId.Contains(4)) //控えから発動可能
         {
-            StartCoroutine(Char4Characteristic());
+            Char4Characteristic();
         }
         if (charId == 5)
         {
-            StartCoroutine(Char5Characteristic());
+            Char5Characteristic();
         }
         if (charId == 6)
         {
-            StartCoroutine(Char6Characteristic());
+            Char6Characteristic();
         }
     }
 
     //キャラIDが1のキャラの特性
-    IEnumerator Char1Characteristic()
+    public void Char1Characteristic()
     {
         //敵を倒したときHP回復
         Heal(false, maxHp * 0.15f);
-
-        yield break;
     }
 
     //キャラIDが2のキャラの特性
-    IEnumerator Char2Characteristic()
+    public void Char2Characteristic()
     {
         //HPが半分以下のとき攻撃力2倍
         if (currentHp <= Mathf.Ceil((float)maxHp / 2)) 
@@ -1138,21 +1075,17 @@ public class Player : MonoBehaviour
             //ダメージ2倍
             damageBuff *= 2.0f;
         }
-
-        yield break;
     }
 
     //キャラIDが3のキャラの特性
-    IEnumerator Char3Characteristic()
+    public void Char3Characteristic()
     {
         //ダメージ軽減
         DamageReduction(25.0f);
-
-        yield break;
     }
 
     //キャラIDが4のキャラの特性
-    IEnumerator Char4Characteristic()
+    public void Char4Characteristic()
     {
         //控えからでも継続させること
         int tA1 = dB_charData.charData[teamCoutnrollerScript.TeamIdData[0]].attribute;
@@ -1168,23 +1101,18 @@ public class Player : MonoBehaviour
         {
             damageBuff *= 1.2f;
         }
-
-        yield break;
     }
 
     //キャラIDが5のキャラの特性
-    IEnumerator Char5Characteristic()
+    public void Char5Characteristic()
     {
-
-        yield break;
+        //
     }
 
     //キャラIDが6のキャラの特性
-    IEnumerator Char6Characteristic()
+    public void Char6Characteristic()
     {
-
-
-        yield break;
+        baseAttackBuff += Mathf.CeilToInt(currentHp * 0.025f);
     }
 
     //被ダメージ
@@ -1324,7 +1252,7 @@ public class Player : MonoBehaviour
     {
         if (charId == 1)
         {
-            StartCoroutine(Char1Characteristic());
+            Char1Characteristic();
         }
         Debug.Log("EnemyKill");
     }
@@ -1342,7 +1270,7 @@ public class Player : MonoBehaviour
     }
     */
 
-            //maxHp参照用(getset)
+    //maxHp参照用(getset)
     public int MaxHp // プロパティ
     {
         get { return maxHp; }  // 通称ゲッター。呼び出した側がscoreを参照できる

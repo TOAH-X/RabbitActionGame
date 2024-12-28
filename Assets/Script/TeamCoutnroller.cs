@@ -43,7 +43,7 @@ public class TeamCoutnroller : MonoBehaviour
             teamIdData[i] = i + 1;
         }
         teamIdData[0] = 6;
-        teamIdData[1] = 5;
+        teamIdData[1] = 2;
         teamIdData[2] = 4;
 
         //”z—ñ‚Ì‰Šú‰»(ƒGƒ‰[‘Îô)

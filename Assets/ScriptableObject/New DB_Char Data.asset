@@ -42,7 +42,7 @@ MonoBehaviour:
     buffHp: 0
     baseAttack: 1393
     characteristicName: "\u518D\u751F\u306E\u98A8"
-    characteristicExplanation: "\u6575\u3092\u5012\u3057\u305F\u6642\u81EA\u8EAB\u306EHP\u56DE\u5FA9(HP\xD70.15)\u3002"
+    characteristicExplanation: "\u6575\u3092\u5012\u3057\u305F\u6642\u81EA\u8EAB\u306EHP\u3092\u56DE\u5FA9(HP10\uFF05)\u3002"
     skillName: "\u6B8B\u97FF"
     skillExplanation: "7\u79D2\u9593\u3001\u901A\u5E38\u653B\u6483\u304C\u30A8\u30FC\u30C6\u30EB\u5C5E\u6027\u306B\u306A\u308B\u3002"
     specialMoveName: "\u6727\u6708\u65AC"
@@ -51,8 +51,8 @@ MonoBehaviour:
     maxSpecialMoveEnergy: 0
     maxSpecialMoveRecharge: 7
     baseMoveSpeed: 3
-    charIcon: {fileID: 0}
-    charFullBodyImage: {fileID: 0}
+    charIcon: {fileID: 21300000, guid: 797fac409cf2c3b4db45c56c7f6a4749, type: 3}
+    charFullBodyImage: {fileID: 21300000, guid: 797fac409cf2c3b4db45c56c7f6a4749, type: 3}
   - charId: 2
     charName: "\u30B7\u30E2\u30E9"
     rarity: 5
@@ -132,7 +132,7 @@ MonoBehaviour:
     maxSpecialMoveRecharge: 18
     baseMoveSpeed: 3
     charIcon: {fileID: 21300000, guid: f89d4e99e1984ee4e805a39158c666fe, type: 3}
-    charFullBodyImage: {fileID: 0}
+    charFullBodyImage: {fileID: 21300000, guid: f89d4e99e1984ee4e805a39158c666fe, type: 3}
   - charId: 6
     charName: "\u57CE\u30F6\u5D0E\u8C4A\u6D77"
     rarity: 4
