@@ -45,10 +45,8 @@ public class DebuffedAttributeResistance : MonoBehaviour
     //“G‚Æ‚ÌÚG
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("eeeeeeeeeeeeeeeee");
         if (other.CompareTag("Enemy"))
         {
-            Debug.Log("uuuuuuuuuuuuuuu");
             enemyHpScript = other.gameObject.GetComponent<EnemyHP>();
             //ƒ_ƒ[ƒW‚ğ—^‚¦‚éˆ—
             if (enemyHpScript != null)

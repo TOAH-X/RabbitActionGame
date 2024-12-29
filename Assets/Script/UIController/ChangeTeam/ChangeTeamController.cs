@@ -41,6 +41,7 @@ public class ChangeTeamController : MonoBehaviour
         SetIcon();
         //TeamMember‚Ì‰Šú‰»
         changeTeamTeamMemberControllerScript.ChangeTeamMember();
+        //—§‚¿ŠG‚Ì‰Šú‰»
         
     }
 

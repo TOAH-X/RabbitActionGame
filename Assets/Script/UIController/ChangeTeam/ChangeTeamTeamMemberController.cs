@@ -55,11 +55,12 @@ public class ChangeTeamTeamMemberController : MonoBehaviour
         teamCoutnrollerScript.ChangeTeam(updateTeamId);
     }
 
-    //チームメンバー交代
+    //チームメンバー交代(現時点では重複した場合は操作を無効化)
     public void ChangeMember(int charId) 
     {
         int counter = 0;
-        for(int i = 0; i < 3; i++) 
+        int conflictTeamId = 0;
+        for (int i = 0; i < 3; i++) 
         {
             if (currentSelectTeamId != i) 
             {
@@ -67,16 +68,24 @@ public class ChangeTeamTeamMemberController : MonoBehaviour
                 {
                     counter++;
                 }
+                else 
+                {
+                    conflictTeamId = i;
+                }
             }
         }
         if (counter == 2) 
         {
+            //キャラの交換
             updateTeamId[currentSelectTeamId] = charId;
             ChangeIcon(currentSelectTeamId, charId);
         }
         else
         {
-            Debug.Log("重複");
+            //重複した時のキャラの交換
+            (updateTeamId[conflictTeamId], updateTeamId[currentSelectTeamId]) = (updateTeamId[currentSelectTeamId], updateTeamId[conflictTeamId]);
+            ChangeIcon(conflictTeamId, updateTeamId[conflictTeamId]);
+            ChangeIcon(currentSelectTeamId, updateTeamId[currentSelectTeamId]);
         }
     }
 
