@@ -70,7 +70,6 @@ public class IconController : MonoBehaviour
         CharDbReference(teamController.CharId);                 //現在使用中のキャラの参照
         if (charIcon != null)
         {
-            
             thisImage.sprite = charIcon;
         }
         else 
@@ -80,7 +79,7 @@ public class IconController : MonoBehaviour
         currentCharId = teamController.CharId;
     }
 
-    //チームチェンジ検出時
+    //チームチェンジ検出時(表のキャラ)
     public void TeamChange(int teamId)
     {
         CharDbReference(teamController.TeamIdData[teamId]);

@@ -99,12 +99,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bba61969a34b69847921ed6644e1e81a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalAttack: 10
-  attackCharId: 0
-  isAttentionDamage: 0
-  isDestroy: 0
-  destroyCounter: 0
-  normalAttackAttribute: 0
 --- !u!58 &3082754915583121203
 CircleCollider2D:
   m_ObjectHideFlags: 0

@@ -786,7 +786,7 @@ public class Player : MonoBehaviour
     //キャラID、倍率計算後の攻撃力、属性、会心ダメージ、会心率、攻撃発生場所、攻撃範囲の大きさ(x,y)、ノックバック量(charIDが抜けているので加えること)
     //public void AttackMaker(int multipliedAttack, int finalAttributeNormalAttack, float multipliedAttentionDamage, float multipliedAttentionRate, Vector3 attackPos, Vector2 attackSize, float knockBackValue)
     //プレイヤーの矢(遠距離攻撃)
-    //攻撃タイプ(通常0)、攻撃力、属性、会心ダメージ、会心率、矢の発生位置、矢の大きさ、攻撃範囲(0の場合は単体攻撃)、ノックバック量、発射角度
+    //攻撃タイプ(通常0、ID的なもの)、攻撃力、属性、会心ダメージ、会心率、矢の発生位置、矢の大きさ、攻撃範囲(0の場合は単体攻撃)、ノックバック量、発射角度
     public void Arrow(int attackType, int multipliedAttack, int arrowAttribute, float arrowAttentionDamage, float arrowAttentionRate, Vector2 playerArrowObjsPos, Vector2 playerArrowObjsSize, Vector2 arrowAttackRangeSize, float arrowKnockBackValue, float arrowLaunchAngle)
     {
         //設置
@@ -802,11 +802,8 @@ public class Player : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.E) == false)
         {
             //右向きと左向きで発生位置を変更
-            float normalAttackDirection = 0.5f;
-            if (isLookRight == false) 
-            {
-                normalAttackDirection = -0.5f;
-            }
+            float normalAttackDirection = 0.75f;
+            normalAttackDirection *= GetFacingDirection(isLookRight);
             Vector3 normalAttackPos = this.transform.position;
             normalAttackPos.x += normalAttackDirection;
 
@@ -844,6 +841,14 @@ public class Player : MonoBehaviour
             else if (charId == 6)
             {
                 Char6SpecialMove();
+            }
+            else if (charId == 7)
+            {
+                Char7SpecialMove();
+            }
+            else if (charId == 8)
+            {
+                Char8SpecialMove();
             }
         }
     }
@@ -936,6 +941,18 @@ public class Player : MonoBehaviour
         AttackMaker((int)(attack * 14.5f), 3, attentionDamage, attentionRate, this.transform.position, new Vector2(5.5f, 5.5f), 800, false);
     }
 
+    //キャラIDが7のキャラの必殺技
+    public void Char7SpecialMove()
+    {
+        
+    }
+
+    //キャラIDが8のキャラの必殺技
+    public void Char8SpecialMove()
+    {
+        
+    }
+
     //スキル
     public void Skill()
     {
@@ -966,6 +983,14 @@ public class Player : MonoBehaviour
             else if (charId == 6)
             {
                 Char6Skill();
+            }
+            else if (charId == 7)
+            {
+                Char7Skill();
+            }
+            else if (charId == 8)
+            {
+                Char8Skill();
             }
         }
     }
@@ -1027,6 +1052,18 @@ public class Player : MonoBehaviour
         }
     }
 
+    //キャラIDが7のキャラのスキル
+    public void Char7Skill()
+    {
+        
+    }
+
+    //キャラIDが8のキャラのスキル
+    public void Char8Skill()
+    {
+        Arrow(1, (int)(attack * 0.7f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), new Vector2(1.0f, 1.0f), 10, 0);
+    }
+
     //特性
     private void Characteristic()
     {
@@ -1056,6 +1093,14 @@ public class Player : MonoBehaviour
         if (charId == 6)
         {
             Char6Characteristic();
+        }
+        if (charId == 7)
+        {
+            Char7Characteristic();
+        }
+        if (charId == 8)
+        {
+            Char8Characteristic();
         }
     }
 
@@ -1113,6 +1158,18 @@ public class Player : MonoBehaviour
     public void Char6Characteristic()
     {
         baseAttackBuff += Mathf.CeilToInt(currentHp * 0.025f);
+    }
+
+    //キャラIDが7のキャラの特性
+    public void Char7Characteristic()
+    {
+        
+    }
+
+    //キャラIDが8のキャラの特性
+    public void Char8Characteristic()
+    {
+        
     }
 
     //被ダメージ

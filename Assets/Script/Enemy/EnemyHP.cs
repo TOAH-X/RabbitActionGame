@@ -12,6 +12,8 @@ public class EnemyHP : MonoBehaviour
     [SerializeField] int enemyCurrentHp = 0;                    //敵の現在HP
     [SerializeField] int enemyAttribute = 0;                    //敵の属性
 
+    private Rigidbody2D rb2d;                                   //rigidbody2d(吸引にしか使っていないのでアクションの方になるべく移動すること)
+
     //ダメージ表記用
     [SerializeField] GameObject damageNotationObj;              //ダメージ表記オブジェクト
     [SerializeField] Transform canvasTransform;                 //Canvasを見つける(ダメージ表示用など)
@@ -36,6 +38,8 @@ public class EnemyHP : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        rb2d= GetComponent<Rigidbody2D>();
+
         enemyHpScript = GetComponent<EnemyHP>();
 
         //ステータス参照
@@ -268,19 +272,23 @@ public class EnemyHP : MonoBehaviour
         }*/
         StartCoroutine(Vacuum(vacuumPos, vacuumDuration, vacuumPower));
     }
-
+    //吸引
     IEnumerator Vacuum(Vector2 vacuumPos,float vacuumDuration, float vacuumPower) 
     {
         float timer = 0;
         while (timer <= vacuumDuration) 
         {
             //目標地点まで移動
-            if (Vector2.Distance(vacuumPos, (Vector2)transform.position) > 0.2)
+            if (Vector2.Distance(vacuumPos, (Vector2)transform.position) > 0.5)
             {
                 //向きの計算
                 Vector2 distance = (vacuumPos - (Vector2)transform.position).normalized;
 
-                transform.position += (Vector3)distance * vacuumPower;
+                //transform.position += (Vector3)distance * vacuumPower;    //壁抜けできるのでvelocityで代替。transformは削除
+                if (Vector2.Distance(Vector2.zero, rb2d.velocity) < 5.0f) 
+                {
+                    rb2d.velocity += (Vector2)distance * vacuumPower * 10;
+                }
                 //向きの計算
                 distance = (vacuumPos - (Vector2)transform.position).normalized;
             }

@@ -1602,7 +1602,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   contentObj: {fileID: 574717214}
   charIconObj: {fileID: 2300963983257172903, guid: 3fa53e38f0caef74d9d30cbe37f17c66, type: 3}
+  charFullBodyImage: {fileID: 741532581}
   changeTeamTeamMemberControllerScript: {fileID: 1605973646}
+  charIconObjs: []
   dB_charData: {fileID: 11400000, guid: 78684721d81a799499212c3c912b203b, type: 2}
 --- !u!224 &255883230 stripped
 RectTransform:
@@ -2401,7 +2403,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &417839140
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2479,9 +2481,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1605973646}
-        m_TargetAssemblyTypeName: ChangeTeamTeamMemberController, Assembly-CSharp
-        m_MethodName: UpdateTeam
+      - m_Target: {fileID: 237397473}
+        m_TargetAssemblyTypeName: ChangeTeamController, Assembly-CSharp
+        m_MethodName: QuitChangeTeam
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2490,6 +2492,30 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 417839139}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1971451241}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &417839142
 MonoBehaviour:
@@ -5631,7 +5657,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!223 &1070875402
 Canvas:
   m_ObjectHideFlags: 0
@@ -5641,7 +5667,7 @@ Canvas:
   m_GameObject: {fileID: 1070875399}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 2
   m_Camera: {fileID: 519420031}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -5651,7 +5677,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 5
+  m_SortingOrder: 4
   m_TargetDisplay: 0
 --- !u!224 &1070875403
 RectTransform:
@@ -5661,8 +5687,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1070875399}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 90}
+  m_LocalScale: {x: 0.00925926, y: 0.00925926, z: 0.00925926}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1358825320}
@@ -5673,8 +5699,8 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920.0001, y: 1080}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1078615549
 GameObject:
   m_ObjectHideFlags: 0
@@ -12308,7 +12334,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63af9619b14974d44a771dc0a44250ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerScript: {fileID: 0}
+  playerScript: {fileID: 1463175909}
+  iconControllerScript: {fileID: 1695306795}
   currentChar: 0
   charId: 0
   teamIdData: 
@@ -19872,7 +19899,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 150, y: 450}
+  m_AnchoredPosition: {x: 350, y: 450}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1971451243
@@ -19933,8 +19960,32 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 237397473}
         m_TargetAssemblyTypeName: ChangeTeamController, Assembly-CSharp
-        m_MethodName: OpenChengTeam
+        m_MethodName: OpenChangeTeam
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1971451241}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 417839139}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

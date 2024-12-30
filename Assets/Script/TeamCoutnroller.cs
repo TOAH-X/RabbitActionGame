@@ -8,6 +8,8 @@ using UnityEngine.UI;
 public class TeamCoutnroller : MonoBehaviour
 {
     [SerializeField] Player playerScript;                       //プレイヤースクリプト
+    [SerializeField] IconController iconControllerScript;       //IconControllerのスクリプト
+
     [SerializeField] int currentChar;                           //現在表のキャラ(チームの何番目のキャラか)
     [SerializeField] int charId;                                //キャラID
     [SerializeField] int[] teamIdData = new int[3];             //チーム編成のキャラIDデータ情報を格納
@@ -30,8 +32,6 @@ public class TeamCoutnroller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerScript = this.gameObject.GetComponent<Player>();
-
         //配列の初期化(エラー対策)
         if (teamIdData == null || teamIdData.Length < 3) 
         {
@@ -82,42 +82,15 @@ public class TeamCoutnroller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //チーム変更
-        if (Input.GetKey(KeyCode.Z)) 
-        {
-            //ChangeTeam();
-        }
-
         GetPlayerData(currentChar);
 
         //キャラ死亡時、生存フラグ変更と強制チェンジ
-        if (teamCurrentHpData[0] <= 0 && isTeamCharAlive[0] == true)  
+        if (teamCurrentHpData[currentChar] <= 0) 
         {
-            isTeamCharAlive[0] = false;
-            if (teamCurrentHpData[1] <= 0)
-            {
-                CharChange(2);
-            }
-            CharChange(1);
+            if (teamCurrentHpData[(currentChar + 1) % 3] > 0) CharChange((currentChar + 1) % 3);
+            else if (teamCurrentHpData[(currentChar + 2) % 3] > 0) CharChange((currentChar + 2) % 3);
         }
-        if (teamCurrentHpData[1] <= 0 && isTeamCharAlive[1] == true)
-        {
-            isTeamCharAlive[1] = false;
-            if (teamCurrentHpData[1] <= 0)
-            {
-                CharChange(2);
-            }
-            CharChange(0);
-        }
-        if (teamCurrentHpData[2] <= 0 && isTeamCharAlive[2] == true)
-        {
-            isTeamCharAlive[2] = false;
-            if (teamCurrentHpData[1] <= 0)
-            {
-                CharChange(1);
-            }
-            CharChange(0);
-        }
+
         //キャラチェンジ
         if (teamChangeTimer <= 0)
         {
@@ -224,6 +197,8 @@ public class TeamCoutnroller : MonoBehaviour
     //チーム編成変更
     public void ChangeTeam(int[] updateTeam) 
     {
+        //現在HPを保管し渡す、クールタイムをリセット
+
         teamIdData[0] = updateTeam[0];
         teamIdData[1] = updateTeam[1];
         teamIdData[2] = updateTeam[2];
@@ -232,6 +207,8 @@ public class TeamCoutnroller : MonoBehaviour
         SetPlayerData(0);
 
         playerScript.CharChange(teamIdData[0]);                                 //プレイヤースクリプトにキャラ変更した情報を渡す
+
+        iconControllerScript.TeamChange(currentChar);                           //出場キャラのアイコンのセット
     }
 
     //プレイヤーからデータを取得

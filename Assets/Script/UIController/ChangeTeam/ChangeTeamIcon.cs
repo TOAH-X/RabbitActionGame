@@ -25,7 +25,7 @@ public class ChangeTeamIcon : MonoBehaviour, IPointerClickHandler
         charId= id;
     }
 
-    //アイコンがクリックされたとき
+    //アイコンがクリックされたとき(内部を関数に分けること)
     public void OnPointerClick(PointerEventData eventData)
     {
         //CharFullBodyImageオブジェクトの取得
