@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -1037,8 +1038,9 @@ public class Player : MonoBehaviour
     //キャラIDが5のキャラのスキル
     public void Char5Skill()
     {
+        Vector2 vacuumPos = new Vector2(transform.position.x + GetFacingDirection(isLookRight) * 3.0f, transform.position.y);
         //集敵効果
-        Vacuum(this.transform.position, new Vector2(8, 8), 5.0f, 0.1f);
+        Vacuum(vacuumPos, new Vector2(7.5f, 7.5f), 5.0f, 0.1f);
     }
 
     //キャラIDが6のキャラのスキル
@@ -1061,7 +1063,8 @@ public class Player : MonoBehaviour
     //キャラIDが8のキャラのスキル
     public void Char8Skill()
     {
-        Arrow(1, (int)(attack * 0.7f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), new Vector2(1.0f, 1.0f), 10, 0);
+        int randomAttribute = UnityEngine.Random.Range(0, 7);
+        Arrow(1, (int)(attack * 0.7f), randomAttribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), new Vector2(1.0f, 1.0f), 10, 0);
     }
 
     //特性
