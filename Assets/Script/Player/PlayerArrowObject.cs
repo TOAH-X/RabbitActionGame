@@ -13,6 +13,8 @@ public class PlayerArrowObject : MonoBehaviour
     private float arrowKnockBackValue = 0;          //ノックバック量
     private float arrowLaunchAngle = 0;             //射出角度
 
+    private bool isTrigger = false;                 //トリガーに既に敵が接触しているか
+
     private Vector2 arrowAttackRangeSize = Vector2.zero;    //攻撃範囲
     
     private int arrowAttackType = 0;                //キャラ内の矢の種類。通常攻撃:0、その他はキャラごと
@@ -42,7 +44,7 @@ public class PlayerArrowObject : MonoBehaviour
     //プレイヤースクリプト、キャラID、攻撃のタイプ(通常攻撃:0、その他はキャラごとに割り当て)、キャラ倍率計算後の攻撃力、属性、会心ダメージ、会心率、攻撃発生場所、攻撃範囲の大きさ(x,y)、ノックバック量、発射角度
     public void Arrow(Player player, int charId, int attackType, int attack, int attribute, float attentionDamage, float attentionRate, Vector2 attackRangeSize, float knockBackValue, float launchAngle)
     {
-        //重力、追従するか、を書き加えること
+        //重力、追従するか、を書き加えること(重力なしをデフォルトにすること)
         arrowCharId = charId;
         arrowAttack = attack;
         arrowAttribute = attribute;
@@ -61,6 +63,11 @@ public class PlayerArrowObject : MonoBehaviour
         if (arrowCharId == 4 && attackType >= 1)
         {
             Char4();
+        }
+        //キャラID8用の処理
+        if (arrowCharId == 8 && attackType == 1)
+        {
+            Char8();
         }
     }
 
@@ -82,6 +89,8 @@ public class PlayerArrowObject : MonoBehaviour
                 //攻撃
                 Attack();
 
+                isTrigger = true;
+
                 //消滅
                 ArrowDestroy();
             }
@@ -94,7 +103,8 @@ public class PlayerArrowObject : MonoBehaviour
         //単体直接攻撃用
         if (arrowAttackRangeSize.x == 0 && arrowAttackRangeSize.y == 0) 
         {
-            playerScript.SingleAttack(enemyHpScript, arrowAttack, arrowAttribute, arrowAttentionDamage, arrowAttentionRate, arrowKnockBackValue, true);
+            if (isTrigger == true) return;
+            playerScript.SingleAttack(enemyHpScript, arrowAttack, arrowAttribute, arrowAttentionDamage, arrowAttentionRate, arrowKnockBackValue, false);
         }
         //範囲攻撃
         else
@@ -170,6 +180,33 @@ public class PlayerArrowObject : MonoBehaviour
             yield return null;
         }
         timer = 0;
+        ArrowDestroy();
+        yield break;
+    }
+
+    //(消すか名前を変えること)
+    public void Char8()
+    {
+        rb2d.gravityScale = 0f;
+
+        StartCoroutine(Char8skill());
+    }
+
+    //キャラID8のスキル
+    IEnumerator Char8skill()
+    {
+        transform.localEulerAngles = new Vector3(0, 0, -90);
+
+        float moveSpeed = 0.5f;
+
+        float timer = 0;
+        while (timer <= 2.0f)
+        {
+            transform.position += (transform.up * moveSpeed) * 60 * Time.deltaTime;
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
         ArrowDestroy();
         yield break;
     }

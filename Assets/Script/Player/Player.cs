@@ -1061,10 +1061,14 @@ public class Player : MonoBehaviour
     }
 
     //キャラIDが8のキャラのスキル
-    public void Char8Skill()
+    async public void Char8Skill()
     {
-        int randomAttribute = UnityEngine.Random.Range(0, 7);
-        Arrow(1, (int)(attack * 0.7f), randomAttribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), new Vector2(1.0f, 1.0f), 10, 0);
+        for (int i = 0; i < 10; i++) 
+        {
+            int randomAttribute = UnityEngine.Random.Range(0, 7);
+            Arrow(1, (int)(attack * 1.2f), randomAttribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), new Vector2(0, 0), 10, 0);
+            await UniTask.Delay(TimeSpan.FromSeconds(0.05f));
+        }
     }
 
     //特性

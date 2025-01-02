@@ -178,16 +178,16 @@ MonoBehaviour:
     rarity: 5
     attribute: 6
     weaponType: 0
-    baseHp: 1
+    baseHp: 14312
     buffHp: 0
-    baseAttack: 1
+    baseAttack: 1352
     characteristicName: 
     characteristicExplanation: 
     skillName: 
     skillExplanation: 
     specialMoveName: 
     specialMoveExplanation: 
-    maxSkillRecharge: 5
+    maxSkillRecharge: 1
     maxSpecialMoveEnergy: 0
     maxSpecialMoveRecharge: 16
     baseMoveSpeed: 3
