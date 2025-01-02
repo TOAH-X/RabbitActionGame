@@ -26,6 +26,8 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject debuffedAttributeResistanceObj; //デバフオブジェクト
     [SerializeField] GameObject playerArrowObj;                 //矢(など遠距離用)のオブジェクト
 
+    [SerializeField] DataManager dataManagerScript;             //データマネージャースクリプト(JSON、データ保管用)
+
     private bool isFollowUpAttack = false;                      //追撃トリガー(キャラ5用なので書き換えること)
     
     [SerializeField] List<GameObject> hookShotObjList = new List<GameObject>();     //フックショットのプレハブリスト
@@ -140,9 +142,6 @@ public class Player : MonoBehaviour
     {
         //FPS固定
         Application.targetFrameRate = 60;
-
-        rb2D = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
 
         //ステータスをデータベースから参照
         CharDbReference();
@@ -1020,6 +1019,7 @@ public class Player : MonoBehaviour
     //キャラIDが3のキャラのスキル
     public void Char3Skill()
     {
+        
         //集敵効果
         Vacuum(this.transform.position, new Vector2(12.5f, 12.5f), 0.5f, 0.1f);
         //攻撃
