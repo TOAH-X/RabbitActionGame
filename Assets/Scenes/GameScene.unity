@@ -3186,8 +3186,8 @@ MonoBehaviour:
   m_ChildAlignment: 1
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 180, y: 190}
-  m_Spacing: {x: 20, y: 10}
+  m_CellSize: {x: 200, y: 200}
+  m_Spacing: {x: 0, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
 --- !u!1 &577070476
@@ -12292,7 +12292,6 @@ MonoBehaviour:
   vacuumRangeObj: {fileID: 6661670559102116290, guid: 4b7135307d0cf84479769fb921931487, type: 3}
   debuffedAttributeResistanceObj: {fileID: 5725528871158072702, guid: 5310d0e18f062c641ad9ef3a93b736e8, type: 3}
   playerArrowObj: {fileID: 5178750280182928138, guid: 80a458a79d5e1c64f983c431d6ee389d, type: 3}
-  dataManagerScript: {fileID: 1498760154}
   hookShotObjList: []
   hookShotObjCount: 0
   afterEffectObj: {fileID: 2186947381746427701, guid: b4ce2c88863d85c48add808d3c124bc6, type: 3}
@@ -12387,6 +12386,7 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  dataManagerScript: {fileID: 1498760154}
   dB_charData: {fileID: 11400000, guid: 78684721d81a799499212c3c912b203b, type: 2}
 --- !u!1 &1474897808
 GameObject:
@@ -17446,6 +17446,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   charDataList: []
+  dB_charData: {fileID: 11400000, guid: 78684721d81a799499212c3c912b203b, type: 2}
 --- !u!4 &1498760155
 Transform:
   m_ObjectHideFlags: 0

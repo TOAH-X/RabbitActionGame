@@ -150,14 +150,14 @@ public class DamageNotation : MonoBehaviour
         //会心ダメージ時
         if (isAttentionDamage == true) 
         {
-            this.transform.localScale += new Vector3(sizeX / 8 * 10, sizeY / 8 * 10);
+            this.transform.localScale += new Vector3(sizeX / 10 * 30, sizeY / 10 * 30);
         }
         //会心ダメージ時
         for (int i = 0; i < 10; i++)
         {
             if (isAttentionDamage == true) 
             {
-                this.transform.localScale -= new Vector3(sizeX / 10, sizeY / 10);
+                this.transform.localScale -= new Vector3(sizeX / 100 * 28, sizeY / 100 * 28);
             }
             yield return null;
         }

@@ -26,6 +26,8 @@ public class TeamCoutnroller : MonoBehaviour
     [SerializeField] float[] teamCurrentSkillRechargeData = new float[3];       //チームの現在スキルクールタイムデータ
     [SerializeField] float[] teamCurrentSpecialMoveRechargeData = new float[3]; //チームの現在必殺技クールタイムデータ
 
+    [SerializeField] DataManager dataManagerScript;             //データマネージャースクリプト(JSON、データ保管用)
+
     //キャラクターデータベース
     public DB_CharData dB_charData;
 
@@ -197,11 +199,19 @@ public class TeamCoutnroller : MonoBehaviour
     //チーム編成変更
     public void ChangeTeam(int[] updateTeam) 
     {
-        //現在HPを保管し渡す、クールタイムをリセット
+        //最大HPを保管し渡す、クールタイムをリセットをすること
+        //変更後のキャラのHPの取得
+        for (int i = 0; i < 3; i++) 
+        {
+            dataManagerScript.UpdateJSONData(teamIdData[i], teamCurrentHpData[i], 99);      //ステータスの更新(現時点では現在HPのみ)
+            teamIdData[i] = updateTeam[i];                                                  //キャラIDの交代
+            teamCurrentHpData[i] = dataManagerScript.GetCurrentHp(teamIdData[i]);           //現在キャラにステータスの代入
 
-        teamIdData[0] = updateTeam[0];
-        teamIdData[1] = updateTeam[1];
-        teamIdData[2] = updateTeam[2];
+            teamCurrentSkillRechargeData[i] = 0;                                            //チームの現在スキルクールタイムを0に(チーム編成の変更で無限にスキルが打てることに留意すること)
+            playerScript.CurrentSkillRecharge = 0;
+            teamCurrentSpecialMoveRechargeData[i] = 0;                                      //チームの現在必殺技クールタイムを0に
+            playerScript.CurrentSpecialMoveRecharge = 0;
+        }
 
         GetPlayerData(currentChar);
         SetPlayerData(0);

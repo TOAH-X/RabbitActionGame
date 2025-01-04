@@ -197,7 +197,7 @@ public class PlayerArrowObject : MonoBehaviour
     {
         transform.localEulerAngles = new Vector3(0, 0, -90);
 
-        float moveSpeed = 0.5f;
+        float moveSpeed = 0.75f;
 
         float timer = 0;
         while (timer <= 2.0f)

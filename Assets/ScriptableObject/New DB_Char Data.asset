@@ -176,7 +176,7 @@ MonoBehaviour:
   - charId: 8
     charName: "\u30C0\u30FC\u30C4"
     rarity: 5
-    attribute: 6
+    attribute: 5
     weaponType: 0
     baseHp: 14312
     buffHp: 0

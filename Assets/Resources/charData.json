@@ -1,8 +1,48 @@
 {
     "charDataList": [
         {
+            "id": 0,
+            "currentHp": 0,
+            "level": 99
+        },
+        {
             "id": 1,
             "currentHp": 11324,
+            "level": 99
+        },
+        {
+            "id": 2,
+            "currentHp": 9343,
+            "level": 99
+        },
+        {
+            "id": 3,
+            "currentHp": 13480,
+            "level": 99
+        },
+        {
+            "id": 4,
+            "currentHp": 13821,
+            "level": 99
+        },
+        {
+            "id": 5,
+            "currentHp": 7015,
+            "level": 99
+        },
+        {
+            "id": 6,
+            "currentHp": 14482,
+            "level": 99
+        },
+        {
+            "id": 7,
+            "currentHp": 14601,
+            "level": 99
+        },
+        {
+            "id": 8,
+            "currentHp": 14312,
             "level": 99
         }
     ]
