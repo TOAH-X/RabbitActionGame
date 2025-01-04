@@ -26,6 +26,8 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject debuffedAttributeResistanceObj; //デバフオブジェクト
     [SerializeField] GameObject playerArrowObj;                 //矢(など遠距離用)のオブジェクト
 
+    [SerializeField] MainCameraController mainCameraControllerScript;   //メインカメラのスクリプト
+
     private bool isFollowUpAttack = false;                      //追撃トリガー(キャラ5用なので書き換えること)
     
     [SerializeField] List<GameObject> hookShotObjList = new List<GameObject>();     //フックショットのプレハブリスト
@@ -937,6 +939,7 @@ public class Player : MonoBehaviour
         DebuffedAttributeResistance(20, transform.position, new Vector2(12.0f, 12.0f), false, 12.5f, 1);
         await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
         AttackMaker((int)(attack * 14.5f), 3, attentionDamage, attentionRate, this.transform.position, new Vector2(5.5f, 5.5f), 800, false);
+        mainCameraControllerScript.ShakeCamera(0.25f, 0.5f, 90, 15, false, true);
     }
 
     //キャラIDが7のキャラの必殺技

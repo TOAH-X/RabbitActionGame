@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class MainCameraController : MonoBehaviour
 {
@@ -26,5 +27,12 @@ public class MainCameraController : MonoBehaviour
             posX = -0.5f;
         }
         transform.position = Vector3.Lerp(transform.position, playerTransform.position + new Vector3(posX, 1.0f, -10), 5.0f * Time.deltaTime);
+    }
+
+
+    //画面揺れ(揺れの長さ、強さ、振動の回数、ランダム性、徐々に弱めるか)
+    public void ShakeCamera(float duration, float strength, int vibrato, float randomness, bool snapping, bool fadeoOut)
+    {
+        transform.DOShakePosition(duration,strength,vibrato, randomness, snapping, fadeoOut);
     }
 }
