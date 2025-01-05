@@ -245,7 +245,7 @@ public class EnemyHP : MonoBehaviour
         }
 
         Player playerScript = playerObj.GetComponent<Player>();
-        playerScript.AttackMaker(damage, 0, 0, 0, this.transform.position, new Vector2(5, 5), 1000, true);
+        playerScript.AttackMaker(Mathf.CeilToInt(damage * 0.1f), 0, 0, 0, this.transform.position, new Vector2(5, 5), 1000, true);
 
         yield break;
     }

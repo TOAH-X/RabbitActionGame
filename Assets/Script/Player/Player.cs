@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -137,6 +138,8 @@ public class Player : MonoBehaviour
     //キャラクターデータベース
     public DB_CharData dB_charData;
 
+    private CancellationTokenSource cts;                        //unitaskのキャンセルトークン
+
     // Start is called before the first frame update
     void Start()
     {
@@ -197,7 +200,7 @@ public class Player : MonoBehaviour
             NormalAttack(attack, normalAttackAttribute);           //攻撃力依存
 
             //Rayの判定(地上にいるとき)
-            if (IsGrounding() == true)
+            if (IsGrounding() == true && rb2D.velocity.y == 0) 
             {
                 //ジャンプ
                 JumpUpdate();
@@ -1030,9 +1033,10 @@ public class Player : MonoBehaviour
     //キャラIDが4のキャラのスキル
     public void Char4Skill()
     {
-        for(int i = 0; i < 9; i++) 
+        float launchAngle = GetFacingDirection(isLookRight) * -90;
+        for (int i = 0; i < 9; i++) 
         {
-            Arrow(i + 1, (int)(attack * 0.7f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), new Vector2(1.0f, 1.0f), 10, 0);
+            Arrow(i + 1, (int)(attack * 0.7f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), new Vector2(1.0f, 1.0f), 10, launchAngle);
         }
     }
 
@@ -1064,10 +1068,12 @@ public class Player : MonoBehaviour
     //キャラIDが8のキャラのスキル
     async public void Char8Skill()
     {
+        float launchAngle = GetFacingDirection(isLookRight) * -90;
         for (int i = 0; i < 10; i++) 
         {
+            SEController.Instance.PlaySound("a");
             int randomAttribute = UnityEngine.Random.Range(0, 7);
-            Arrow(1, (int)(attack * 1.2f), randomAttribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), new Vector2(0, 0), 10, 0);
+            Arrow(1, (int)(attack * 1.2f), randomAttribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), new Vector2(0, 0), 10, launchAngle);
             await UniTask.Delay(TimeSpan.FromSeconds(0.05f));
         }
     }
@@ -1245,7 +1251,7 @@ public class Player : MonoBehaviour
         return getFacingDirection;
     }
 
-    //対消滅ダメージ
+    //対消滅ダメージ(対消滅ダメージに対応させること)
     IEnumerator PairAnnihilationDamage(EnemyAction enemyAction, int damage)
     {
         if (pairAnnihilationDamageTimer <= 0) 
@@ -1299,10 +1305,10 @@ public class Player : MonoBehaviour
     //キャラ情報をデータベースから参照
     public void CharDbReference() 
     {
-        attribute = dB_charData.charData[charId].attribute;                 //属性
-        baseHp = dB_charData.charData[charId].baseHp;                       //基礎HP
-        baseAttack = dB_charData.charData[charId].baseAttack;               //基礎攻撃力
-        maxSkillRecharge = dB_charData.charData[charId].maxSkillRecharge;   //スキルクールタイム
+        attribute = dB_charData.charData[charId].attribute;                             //属性
+        baseHp = dB_charData.charData[charId].baseHp;                                   //基礎HP
+        baseAttack = dB_charData.charData[charId].baseAttack;                           //基礎攻撃力
+        maxSkillRecharge = dB_charData.charData[charId].maxSkillRecharge;               //スキルクールタイム
         maxSpecialMoveRecharge = dB_charData.charData[charId].maxSpecialMoveRecharge;   //必殺技クールタイム
     }
 

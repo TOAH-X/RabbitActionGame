@@ -112,20 +112,13 @@ public class PlayerArrowObject : MonoBehaviour
             Vector2 attackRangePosition = this.transform.position;
             playerScript.AttackMaker(arrowAttack, arrowAttribute, arrowAttentionDamage, arrowAttentionRate, attackRangePosition, arrowAttackRangeSize, arrowKnockBackValue, false);
         }
-
-
-
     }
 
     //以降キャラごとの処理
     //(消すか名前を変えること)
     public void Char4() 
     {
-        
-
         rb2d.gravityScale = 0f;
-
-        
 
         StartCoroutine(Char4skill());
     }
@@ -195,7 +188,7 @@ public class PlayerArrowObject : MonoBehaviour
     //キャラID8のスキル
     IEnumerator Char8skill()
     {
-        transform.localEulerAngles = new Vector3(0, 0, -90);
+        transform.localEulerAngles = new Vector3(0, 0, arrowLaunchAngle);
 
         float moveSpeed = 0.75f;
 
