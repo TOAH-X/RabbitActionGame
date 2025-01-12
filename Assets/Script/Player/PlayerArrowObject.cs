@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -199,6 +200,7 @@ public class PlayerArrowObject : MonoBehaviour
 
             timer += Time.deltaTime;
             yield return null;
+            //await UniTask.Yield(PlayerLoopTiming.FixedUpdate);                  //FixedUpdateにしている。これではフレームがズレる可能性が高いので対策方法を健闘すること
         }
         ArrowDestroy();
         yield break;

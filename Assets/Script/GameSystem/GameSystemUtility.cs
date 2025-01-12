@@ -19,43 +19,43 @@ public static class GameSystemUtility
         {
             if (toAttck == 4)
             {
-                damageRate = 2;
+                damageRate = 1.5f;
             }
             else if (toAttck == 3)
             {
-                damageRate = 2;
+                damageRate = 1.5f;
             }
         }
         else if (fromAttck == 2) // ïó
         {
             if (toAttck == 1)
             {
-                damageRate = 2;
+                damageRate = 1.5f;
             }
         }
         else if (fromAttck == 3) // êÖ
         {
             if (toAttck == 2)
             {
-                damageRate = 2;
+                damageRate = 1.5f;
             }
             else if (toAttck == 1)
             {
-                damageRate = 2;
+                damageRate = 1.5f;
             }
         }
         else if (fromAttck == 4) // ìy
         {
             if (toAttck == 3)
             {
-                damageRate = 2;
+                damageRate = 1.5f;
             }
         }
         else if (fromAttck == 5) // ÉGÅ[ÉeÉã
         {
             if (toAttck is 1 or 2 or 3 or 4)
             {
-                damageRate = 1.5f;
+                damageRate = 1.25f;
             }
             else if (toAttck == 6)
             {
@@ -66,11 +66,11 @@ public static class GameSystemUtility
         {
             if (toAttck is 1 or 2 or 3 or 4)
             {
-                damageRate = 0.5f;
+                damageRate = 0.75f;
             }
             else if (toAttck == 5)
             {
-                damageRate = 2;
+                damageRate = 1.25f;
                 pairAnnihilationAction?.Invoke();
             }
         }

@@ -31,8 +31,8 @@ public class MainCameraController : MonoBehaviour
 
 
     //画面揺れ(揺れの長さ、強さ、振動の回数、ランダム性、徐々に弱めるか)
-    public void ShakeCamera(float duration, float strength, int vibrato, float randomness, bool snapping, bool fadeoOut)
+    public void ShakeCamera(float duration, Vector2 strength, int vibrato, float randomness, bool snapping, bool fadeoOut)
     {
-        transform.DOShakePosition(duration,strength,vibrato, randomness, snapping, fadeoOut);
+        transform.DOShakePosition(duration, new Vector3(strength.x, strength.y, 1.0f), vibrato, randomness, snapping, fadeoOut);
     }
 }

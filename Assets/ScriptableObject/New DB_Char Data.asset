@@ -121,11 +121,11 @@ MonoBehaviour:
     baseHp: 7015
     buffHp: 0
     baseAttack: 1470
-    characteristicName: "\u5BC6\u8B00"
+    characteristicName: "\u572D\u748B\u7389\u5200"
     characteristicExplanation: "\u5473\u65B9\u304C\u30C0\u30E1\u30FC\u30B8\u3092\u53D7\u3051\u305F\u3068\u304D\u3001\u5468\u56F2\u306B\u865A\u7A7A\u5C5E\u6027\u306E\u653B\u6483(\u653B\u6483\u529B\xD7120%)\u304C\u767A\u751F\u3059\u308B\u300220%\u306E\u78BA\u7387\u3067\u901A\u5E38\u653B\u6483\u304C2\u56DE\u767A\u751F\u3059\u308B\u3002"
     skillName: "\u714C\u3081\u304B\u306A\u3044\u865A\u661F"
     skillExplanation: "\u4ED8\u8FD1\u306E\u6575\u3092\u524D\u65B9\u306B\u96C6\u3081\u308B\u30027\u79D2\u9593\u3001\u30C1\u30FC\u30E0\u5168\u54E1\u306E\u88AB\u30C0\u30E1\u30FC\u30B8\u309210%\u8EFD\u6E1B\u3002"
-    specialMoveName: 
+    specialMoveName: "\u5BC6\u8B00"
     specialMoveExplanation: "\u5468\u56F2\u306B\u865A\u7A7A\u5C5E\u6027\u306E\u653B\u6483(\u653B\u6483\u529B360%)\u300212\u79D2\u9593\u3001\u5473\u65B9\u306E\u901A\u5E38\u653B\u6483\u306B\u865A\u7A7A\u5C5E\u6027\u3067\u8FFD\u6483(\u653B\u6483\u529B80%)\u304C\u767A\u751F\u3059\u308B\u3002"
     maxSkillRecharge: 11
     maxSpecialMoveEnergy: 0
@@ -174,7 +174,7 @@ MonoBehaviour:
     charIcon: {fileID: 21300000, guid: f26625c3d59cd974dacfe5a61fb4efa0, type: 3}
     charFullBodyImage: {fileID: 21300000, guid: f26625c3d59cd974dacfe5a61fb4efa0, type: 3}
   - charId: 8
-    charName: "\u30C0\u30FC\u30C4"
+    charName: "\u30A2\u30EB\u30B7\u30B9"
     rarity: 5
     attribute: 5
     weaponType: 0

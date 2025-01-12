@@ -110,7 +110,7 @@ public class Player : MonoBehaviour
     [SerializeField] float hpBuff = 1.0f;                       //HPバフ(％)
     [Header("ダメージバフ")]
     [SerializeField] float damageBuff = 1.0f;                   //ダメージバフ(％)
-
+    [Header("ダメージ軽減率(チーム共有)")]
     [SerializeField] float damageReductionRate = 0f;            //ダメージ軽減率
 
     //Update関数内でバフの計算を毎フレーム行うこと
@@ -417,47 +417,9 @@ public class Player : MonoBehaviour
             InvincibilityTimer(0.25f);
             //ダッシュ可能時間の更新
             dashTimer = 0.25f;
-            /*
-            if (isLookRight == true)
-            {
-                rb2D.AddForce(Vector2.right * dashForce, ForceMode2D.Impulse);
-            }
-            else
-            {
-                rb2D.AddForce(Vector2.left * dashForce, ForceMode2D.Impulse);
-            }
-            */
 
             Vector2 moveDirection = Vector2.zero;
-            /*
-            if (Input.GetKey(KeyCode.W)) 
-            { 
-                moveDirection = Vector2.up;
-            }
-            else if (Input.GetKey(KeyCode.A))
-            {
-                moveDirection = Vector2.left;
-            }
-            else if (Input.GetKey(KeyCode.S))
-            {
-                moveDirection = Vector2.down;
-            }
-            else if (Input.GetKey(KeyCode.D))
-            {
-                moveDirection = Vector2.right;
-            }
-            else 
-            {
-                if (isLookRight == true) 
-                {
-                    moveDirection = Vector2.right;
-                }
-                else 
-                {
-                    moveDirection = Vector2.left;
-                }
-            }
-            */
+
             //8方向対応
             float moveX = Input.GetAxisRaw("Horizontal");
             float moveY = Input.GetAxisRaw("Vertical");
@@ -494,37 +456,6 @@ public class Player : MonoBehaviour
 
         while (timer <= 0.2f)  
         {
-            /*
-            if (moveDirection==Vector2.up)
-            {
-                if (rb2D.velocity.y <= 10) 
-                {
-                    rb2D.AddForce(Vector2.up * dashForce, ForceMode2D.Impulse);
-                }
-                //rb2D.velocity = Vector2.right * dashForce;
-            }
-            else if (moveDirection == Vector2.left)
-            {
-                if (rb2D.velocity.x >= -10)
-                {
-                    rb2D.AddForce(Vector2.left * dashForce, ForceMode2D.Impulse);
-                }
-            }
-            else if (moveDirection == Vector2.down)
-            {
-                if (rb2D.velocity.y >= -10)
-                {
-                    rb2D.AddForce(Vector2.down * dashForce, ForceMode2D.Impulse);
-                }
-            }
-            else if (moveDirection == Vector2.right)
-            {
-                if (rb2D.velocity.x <= 10)
-                {
-                    rb2D.AddForce(Vector2.right * dashForce, ForceMode2D.Impulse);
-                }
-            }
-            */
             if (rb2D.velocity.magnitude <= 10) 
             {
                 rb2D.AddForce(moveDirection * dashForce, ForceMode2D.Impulse);
@@ -549,8 +480,6 @@ public class Player : MonoBehaviour
         spriteRenderer.color = thisColor;
         
         rb2D.gravityScale = thisGravity;
-        //rb2D.velocity *= 0.1f;
-        //rb2D.velocity += thisVerocity;
         rb2D.velocity = Vector2.zero;
 
         isDash = false;
@@ -857,8 +786,14 @@ public class Player : MonoBehaviour
     }
 
     //キャラIDが1のキャラの必殺技
-    async public void Char1SpecialMove()
+    public async void Char1SpecialMove()
     {
+        /*
+        Vector2 thisPos = this.transform.position;                  //現在地点
+
+        rb2D.AddForce(Vector2.right * GetFacingDirection(isLookRight) * 5.0f, ForceMode2D.Impulse);
+        */
+
         for (int i = 0; i < 10; i++)
         {
             if (i <= 1)
@@ -870,44 +805,80 @@ public class Player : MonoBehaviour
             {
                 AttackMaker((int)(attack * 0.8f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(12.5f, 12.5f), 40, false);
             }
+            //残像の生成(GetComponentをなんとかする)
+            Vector3 afterimagePos = Vector3.zero;
+            if (i == 0) afterimagePos = new Vector3(3.5f, -0.5f);
+            if (i == 1) afterimagePos = new Vector3(-3.0f, 2.5f);
+            if (i == 2) afterimagePos = new Vector3(2.5f, 2.0f);
+            if (i == 3) afterimagePos = new Vector3(-2.0f, -1.0f);
+            if (i == 4) afterimagePos = new Vector3(0.5f, 3.5f);
+            if (i == 5) afterimagePos = new Vector3(1.5f, -1.5f);
+            /*
+            if (i == 6) afterimagePos = new Vector3(4.0f, -0.5f);
+            if (i == 7) afterimagePos = new Vector3(-3.5f, 2.5f);
+            if (i == 8) afterimagePos = new Vector3(4.0f, -0.5f);
+            if (i == 9) afterimagePos = new Vector3(-3.5f, 2.5f);
+            */
+            var afterEffectObj = Instantiate(this.afterEffectObj, this.transform.position + afterimagePos, this.transform.rotation);
+            afterEffectObj.transform.localScale = this.transform.localScale;
+            SpriteRenderer afterEffectObjsSpriteRenderer = afterEffectObj.GetComponent<SpriteRenderer>();
+            afterEffectObjsSpriteRenderer.color = new Color32(50, 150, 200, 100);
+            Destroy(afterEffectObj, 0.5f - i * 0.05f);
             await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
         }
+        /*
+        this.transform.position = thisPos;
+        */
     }
 
     //キャラIDが2のキャラの必殺技
-    async public void Char2SpecialMove()
+    public async void Char2SpecialMove()
     {
-        rb2D.AddForce(new Vector2(0,7.5f), ForceMode2D.Impulse);
-        
+        float direction = GetFacingDirection(IsLookRight);
+        rb2D.AddForce(new Vector2(0, 7.5f), ForceMode2D.Impulse);
+
         await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
-        
+
         rb2D.bodyType = RigidbodyType2D.Static;
-        //〇秒掛けて1回転のように記述
+
+        Vector3 relativeRotation = new Vector3(0, 0, direction * 30);
+        transform.DOLocalRotate(relativeRotation, 0.2f, RotateMode.LocalAxisAdd)
+            .SetEase(Ease.InOutQuad);
+
+        //絶対座標の場合
         /*
-        float angle = 360;
-        float timer = 0;
-        while (timer < 1)
-        {
-            this.transform.Rotate(0, 0, -angle * Time.deltaTime * GetFacingDirection(isLookRight));
-            timer += Time.deltaTime;
-            yield return null;
-        }
+        transform.DORotate(targetRotation, 0.2f, RotateMode.FastBeyond360)
+                 .SetEase(Ease.InOutQuad);
         */
+
+        await UniTask.Delay(TimeSpan.FromSeconds(0.3f));
+
+        Vector3 relativeRotation2 = new Vector3(0, 0, direction * -410);
+        transform.DOLocalRotate(relativeRotation2, 0.8f, RotateMode.LocalAxisAdd)
+            .SetEase(Ease.InOutQuad);
+
+        await UniTask.Delay(TimeSpan.FromSeconds(0.7f));
+        mainCameraControllerScript.ShakeCamera(0.5f, new Vector2(1.5f, 3.5f), 30, 15, false, true);
+        await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
+
+        AttackMaker((int)(attack * 12.5f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(7.5f, 7.5f), 1200, false);
+        await UniTask.Delay(TimeSpan.FromSeconds(0.3f));
+
+        Vector3 relativeRotation3 = new Vector3(0, 0, direction * 20);
+        transform.DOLocalRotate(relativeRotation3, 0.2f, RotateMode.LocalAxisAdd)
+            .SetEase(Ease.InOutQuad);
+        await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
+        
         this.transform.eulerAngles = new Vector3(0, 0, 0);
+
+        rb2D.bodyType = RigidbodyType2D.Dynamic;
+
         for (int i = 0; i < 10; i++)
         {
-            if (i == 0)
-            {
-                AttackMaker((int)(attack * 12.5f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(7.5f, 7.5f), 1200, false);
-                await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
-            }
-            else
-            {
-                AttackMaker((int)(attack * 0.2f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(15.0f, 7.5f), 10, false);
-            }
+            AttackMaker((int)(attack * 0.2f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(15.0f, 7.5f), 10, false);
+
             await UniTask.Delay(TimeSpan.FromSeconds(0.3f));
         }
-        rb2D.bodyType = RigidbodyType2D.Dynamic;
     }
 
     //キャラIDが3のキャラの必殺技
@@ -923,7 +894,7 @@ public class Player : MonoBehaviour
     }
 
     //キャラIDが5のキャラの必殺技
-    async public void Char5SpecialMove()
+    public async void Char5SpecialMove()
     {
         AttackMaker((int)(attack * 3.6f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(7.5f, 7.5f), 300, false);
 
@@ -937,12 +908,12 @@ public class Player : MonoBehaviour
     }
 
     //キャラIDが6のキャラの必殺技
-    async public void Char6SpecialMove()
+    public async void Char6SpecialMove()
     {
         DebuffedAttributeResistance(20, transform.position, new Vector2(12.0f, 12.0f), false, 12.5f, 1);
         await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
         AttackMaker((int)(attack * 14.5f), 3, attentionDamage, attentionRate, this.transform.position, new Vector2(5.5f, 5.5f), 800, false);
-        mainCameraControllerScript.ShakeCamera(0.25f, 0.5f, 90, 15, false, true);
+        mainCameraControllerScript.ShakeCamera(0.25f, new Vector2(0.5f, 0.5f), 90, 15, false, true);
     }
 
     //キャラIDが7のキャラの必殺技
@@ -1000,7 +971,7 @@ public class Player : MonoBehaviour
     }
 
     //キャラIDが1のキャラのスキル
-    async public void Char1Skill()
+    public async void Char1Skill()
     {
         //5.0秒間通常攻撃をエーテル属性に変化(バグ対応をすること(控えに戻ったらキャンセル))
         normalAttackAttribute = 5;
@@ -1036,7 +1007,7 @@ public class Player : MonoBehaviour
         float launchAngle = GetFacingDirection(isLookRight) * -90;
         for (int i = 0; i < 9; i++) 
         {
-            Arrow(i + 1, (int)(attack * 0.7f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), new Vector2(1.0f, 1.0f), 10, launchAngle);
+            Arrow(i + 1, (int)(attack * 0.7f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), new Vector2(0, 0), 10, launchAngle);
         }
     }
 
@@ -1049,7 +1020,7 @@ public class Player : MonoBehaviour
     }
 
     //キャラIDが6のキャラのスキル
-    async public void Char6Skill()
+    public async void Char6Skill()
     {
         float healValue = maxHp * 0.05f;
         for(int i = 0; i < 6; i++) 
@@ -1066,7 +1037,7 @@ public class Player : MonoBehaviour
     }
 
     //キャラIDが8のキャラのスキル
-    async public void Char8Skill()
+    public async void Char8Skill()
     {
         float launchAngle = GetFacingDirection(isLookRight) * -90;
         for (int i = 0; i < 10; i++) 
