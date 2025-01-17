@@ -12,8 +12,9 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rb2D;                  //Rigidbody2D
     [SerializeField] private SpriteRenderer spriteRenderer;     //SpriteRenderer
-    [SerializeField] float moveSpeed = 3.0f;                    //移動速度
-    [SerializeField] float baseMoveSpeed = 3.0f;                //基礎移動速度
+    [SerializeField] float moveSpeed = 5.0f;                    //移動速度
+    [SerializeField] float baseMoveSpeed = 5.0f;                //基礎移動速度
+    /*[SerializeField] float moveSpeedBuff = 1.0f;                //移動速度バフ*/    //関数で使用している(削除予定)
     [SerializeField] float jumpForce = 12.0f;                   //ジャンプ力
     [SerializeField] float dashForce = 10.0f;                   //ダッシュ力
     [SerializeField] float hookShotMoveSpeed = 0.5f;            //フックショットの移動速度
@@ -82,6 +83,10 @@ public class Player : MonoBehaviour
     [SerializeField] int baseAttack;                            //基礎攻撃力
     [Header("攻撃力(最終的)")]
     [SerializeField] int attack = 740;                          //攻撃力
+    [Header("基礎会心ダメージ")]
+    [SerializeField] float baseAttentionDamage = 200;           //基礎会心ダメージ(攻撃+会心ダメージ(％))例)会心ダメージ150%は通常の2.5倍
+    [Header("基礎会心率")]
+    [SerializeField] float baseAttentionRate = 30;              //基礎会心率(上限は100%)
     [Header("会心ダメージ")]
     [SerializeField] float attentionDamage = 200;               //会心ダメージ(攻撃+会心ダメージ(％))例)会心ダメージ150%は通常の2.5倍
     [Header("会心率")]
@@ -108,6 +113,10 @@ public class Player : MonoBehaviour
     [SerializeField] float attackBuff = 1.0f;                   //攻撃バフ(％)
     [Header("HPバフ")]
     [SerializeField] float hpBuff = 1.0f;                       //HPバフ(％)
+    [Header("会心ダメージバフ")]
+    [SerializeField] float attentionDamageBuff = 0f;            //ダメージバフ(％)
+    [Header("会心率バフ")]
+    [SerializeField] float attentionRateBuff = 0f;              //ダメージ軽減率
     [Header("ダメージバフ")]
     [SerializeField] float damageBuff = 1.0f;                   //ダメージバフ(％)
     [Header("ダメージ軽減率(チーム共有)")]
@@ -168,18 +177,48 @@ public class Player : MonoBehaviour
 
         //攻撃力計算
         attack = Mathf.CeilToInt((float)((baseAttack + baseAttackBuff) * attackBuff) * damageBuff);
+        //移動速度
+        moveSpeed = baseMoveSpeed;
+        //会心ダメージの計算
+        attentionDamage = baseAttentionDamage + attentionDamageBuff;
+        //会心率の計算
+        attentionRate = baseAttentionRate + attentionRateBuff;
         //HP計算
         maxHp = Mathf.CeilToInt(baseHp * hpBuff);
-        //基礎攻撃のリフレッシュ
+
+
+        //基礎攻撃加算バフのリフレッシュ
         baseAttackBuff = 0;
         //攻撃力バフのリフレッシュ
         attackBuff = 1.0f;
         //HPバフのリフレッシュ
         hpBuff = 1.0f;
+        //移動速度バフのリフレッシュ
+        hpBuff = 1.0f;
         //ダメージバフのリフレッシュ
         damageBuff = 1.0f;
         //ダメージ軽減率のリフレッシュ
         damageReductionRate = 0;
+        //会心ダメージバフのリフレッシュ
+        attentionDamageBuff = 0f;
+        //会心率バフのリフレッシュ
+        attentionRateBuff = 0;
+
+
+
+        //特性
+        Characteristic();
+
+        //必殺技
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SpecialMove();
+        }
+        //スキル
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Skill();
+        }
 
         //特殊移動(フックショット)中ではないとき
         if (isHookShotMoving == false)
@@ -205,20 +244,6 @@ public class Player : MonoBehaviour
                 //ジャンプ
                 JumpUpdate();
             }
-        }
-
-        //特性
-        Characteristic();
-
-        //必殺技
-        if (Input.GetKeyDown(KeyCode.R)) 
-        {
-            SpecialMove();
-        }
-        //スキル
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            Skill();
         }
 
         //死亡時
@@ -912,7 +937,7 @@ public class Player : MonoBehaviour
     {
         DebuffedAttributeResistance(20, transform.position, new Vector2(12.0f, 12.0f), false, 12.5f, 1);
         await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
-        AttackMaker((int)(attack * 14.5f), 3, attentionDamage, attentionRate, this.transform.position, new Vector2(5.5f, 5.5f), 800, false);
+        AttackMaker((int)(attack * 14.5f), 3, attentionDamage, attentionRate, this.transform.position, new Vector2(7.5f, 7.5f), 800, false);
         mainCameraControllerScript.ShakeCamera(0.25f, new Vector2(0.5f, 0.5f), 90, 15, false, true);
     }
 
@@ -923,9 +948,15 @@ public class Player : MonoBehaviour
     }
 
     //キャラIDが8のキャラの必殺技
-    public void Char8SpecialMove()
+    public async void Char8SpecialMove()
     {
-        
+        Heal(true, attack * 1.1f);
+        for (int i = 0; i < 5; i++) 
+        {
+            AttackMaker((int)(attack * 1.2f), 5, attentionDamage, attentionRate, this.transform.position + new Vector3(GetFacingDirection(isLookRight) * 2.5f, 0), new Vector2(6.0f, 6.0f), 200, false);
+            isChar8AttackEther = true;
+            await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
+        }
     }
 
     //スキル
@@ -953,7 +984,7 @@ public class Player : MonoBehaviour
             }
             else if (charId == 5)
             {
-                Char5Skill();
+                StartCoroutine(Char5Skill());
             }
             else if (charId == 6)
             {
@@ -1011,12 +1042,50 @@ public class Player : MonoBehaviour
         }
     }
 
+    /*
     //キャラIDが5のキャラのスキル
-    public void Char5Skill()
+    public async void Char5Skill()
     {
         Vector2 vacuumPos = new Vector2(transform.position.x + GetFacingDirection(isLookRight) * 3.0f, transform.position.y);
         //集敵効果
         Vacuum(vacuumPos, new Vector2(7.5f, 7.5f), 5.0f, 0.1f);
+
+        
+        float timer = 0;
+        while (timer <= 5)
+        {
+            DamageReduction(10.0f);
+            timer += Time.deltaTime;
+            await UniTask.Yield();  // 毎フレーム待機
+
+        }
+        
+    }
+    */
+
+    /*
+    //キャラIDが5のキャラのスキル
+    public void Char5Skill()
+    {
+        StartCoroutine(A());
+    }
+    */
+
+    IEnumerator Char5Skill() 
+    {
+        Vector2 vacuumPos = new Vector2(transform.position.x + GetFacingDirection(isLookRight) * 3.0f, transform.position.y);
+        //集敵効果
+        Vacuum(vacuumPos, new Vector2(7.5f, 7.5f), 5.0f, 0.1f);
+
+        float timer = 0;
+        while (timer <= 5)
+        {
+            DamageReduction(10.0f);
+            timer += Time.deltaTime;
+            yield return null;
+
+        }
+        yield break;
     }
 
     //キャラIDが6のキャラのスキル
@@ -1044,6 +1113,10 @@ public class Player : MonoBehaviour
         {
             SEController.Instance.PlaySound("a");
             int randomAttribute = UnityEngine.Random.Range(0, 7);
+            if (randomAttribute == 5)  
+            {
+                isChar8AttackEther = true;
+            }
             Arrow(1, (int)(attack * 1.2f), randomAttribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), new Vector2(0, 0), 10, launchAngle);
             await UniTask.Delay(TimeSpan.FromSeconds(0.05f));
         }
@@ -1083,7 +1156,7 @@ public class Player : MonoBehaviour
         {
             Char7Characteristic();
         }
-        if (charId == 8)
+        if (teamId.Contains(8)) //控えから発動可能
         {
             Char8Characteristic();
         }
@@ -1151,10 +1224,47 @@ public class Player : MonoBehaviour
         
     }
 
+    private float[] char8Timer = new float[5];
+    private bool isChar8AttackEther = false;
+
     //キャラIDが8のキャラの特性
     public void Char8Characteristic()
     {
-        
+        //移動速度バフ
+        MoveSpeedBuff(20.0f);
+        //スキルか必殺技でエーテル属性攻撃をするたびに会心ダメージとダメージ軽減率をバフ
+        if (isChar8AttackEther == true)     //タイマー管理
+        {
+            int minTimer = 0;
+            for (int i = 0; i < 5; i++)
+            {
+                if (char8Timer[minTimer] > char8Timer[i]) 
+                {
+                    minTimer = i;
+                }
+                if (char8Timer[i] <= 0)
+                {
+                    char8Timer[i] = 5.0f;
+                    break;
+                }
+                else if (i == 4)  
+                {
+                    char8Timer[minTimer] = 5.0f;
+                }
+            }
+            isChar8AttackEther = false;
+        }
+        int buffStack = 0;
+        for (int i = 0; i < 5; i++)         //層の数の判定
+        {
+            if (char8Timer[i] > 0)
+            {
+                char8Timer[i] -= Time.deltaTime;
+                buffStack++;
+            }
+        }
+        DamageReduction(buffStack * 5.0f);
+        AttentionDamageBuff(buffStack * 20.0f);
     }
 
     //被ダメージ
@@ -1196,10 +1306,28 @@ public class Player : MonoBehaviour
         }
     }
 
+    //会心ダメージバフ計算
+    public void AttentionDamageBuff(float attentionDamageBuffValue)
+    {
+        attentionDamageBuff += attentionDamageBuffValue;
+    }
+
+    //会心率バフ計算
+    public void AttentionRateBuff(float attentionRateBuffValue)
+    {
+        attentionRateBuff += attentionRateBuffValue;
+    }
+
     //ダメージ軽減計算
     public void DamageReduction(float damageReductionRateValue) 
     {
         damageReductionRate += damageReductionRateValue;
+    }
+
+    //移動速度バフ計算
+    public void MoveSpeedBuff(float moveSpeedbuff)      //moveSpeedbuffValueに変えた方が良い。
+    {
+        moveSpeed += moveSpeedbuff * baseMoveSpeed * 0.01f;
     }
 
     //硬直
@@ -1208,6 +1336,7 @@ public class Player : MonoBehaviour
         
     } 
 
+    //向きの数値化(右は1、左は-1)
     public int GetFacingDirection(bool isR) 
     {
         int getFacingDirection;
@@ -1281,6 +1410,9 @@ public class Player : MonoBehaviour
         baseAttack = dB_charData.charData[charId].baseAttack;                           //基礎攻撃力
         maxSkillRecharge = dB_charData.charData[charId].maxSkillRecharge;               //スキルクールタイム
         maxSpecialMoveRecharge = dB_charData.charData[charId].maxSpecialMoveRecharge;   //必殺技クールタイム
+        baseMoveSpeed = dB_charData.charData[charId].baseMoveSpeed;                     //移動速度
+        baseAttentionDamage = dB_charData.charData[charId].baseAttentionDamage;         //会心ダメージ
+        baseAttentionRate = dB_charData.charData[charId].baseAttentionRate;             //会心ダメージ
     }
 
     //プレイヤー死亡
@@ -1384,7 +1516,7 @@ public class Player : MonoBehaviour
     public int CharId => charId;
     //攻撃力受け渡し
     public int Attack => attack;
-    //会心率受け渡し
+    //会心ダメージ受け渡し
     public float AttentionDamage => attentionDamage;
     //会心率受け渡し
     public float AttentionRate => attentionRate;

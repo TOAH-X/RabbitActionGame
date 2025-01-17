@@ -32,8 +32,10 @@ public class CharData
     public int baseAttack;                              //基礎攻撃力
     //public int attack;                                //攻撃力
     //public float buffAttack;                          //攻撃力バフ
-    //public float attentionDamage;                     //会心ダメージ(攻撃+会心ダメージ(％))例)会心ダメージ150%は通常の2.5倍
-    //public float attentionRate;                       //会心率(上限は100%)
+    [Header("基礎会心ダメージ")]
+    public float baseAttentionDamage = 150;             //基礎会心ダメージ(攻撃+会心ダメージ(％))例)会心ダメージ150%は通常の2.5倍
+    [Header("基礎会心率")]
+    public float baseAttentionRate = 30;                //基礎会心率(上限は100%)
 
     [Header("特性名")]
     public string characteristicName;                   //特性名

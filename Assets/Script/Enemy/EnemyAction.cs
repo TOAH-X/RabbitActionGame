@@ -183,8 +183,6 @@ public class EnemyAction : MonoBehaviour
             }
         }
 
-        Debug.Log("ƒWƒƒƒ“ƒv");
-
         yield break;
     }
 
