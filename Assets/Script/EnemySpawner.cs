@@ -41,7 +41,7 @@ public class EnemySpawner : MonoBehaviour
     public void EnemySpawn(int iD, int level)
     {
         //“G‚Ì¢Š«
-        var enemyObjPrefab = Instantiate<GameObject>(enemyObj, transform.position, Quaternion.identity);
+        var enemyObjPrefab = Instantiate<GameObject>(enemyObj, transform.position + new Vector3(Random.Range(-1f, 1f), 0), Quaternion.identity);
         enemyScript = enemyObjPrefab.GetComponent<Enemy>();
         //“G‚Éî•ñ‚ğ—^‚¦‚é
         //“GIDAƒŒƒxƒ‹

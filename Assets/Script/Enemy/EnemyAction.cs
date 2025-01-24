@@ -68,32 +68,32 @@ public class EnemyAction : MonoBehaviour
         //thisSpriteRenderer.sprite = enemyPicture;
         if (enemyId == 1) 
         {
-            this.gameObject.GetComponent<SpriteRenderer>().color = new Color32(240, 10, 10, 255);
+            //this.gameObject.GetComponent<SpriteRenderer>().color = new Color32(240, 10, 10, 255);
 
         }
         else if (enemyId == 2)
         {
-            this.gameObject.GetComponent<SpriteRenderer>().color = new Color32(120, 240, 160, 255);
+            //this.gameObject.GetComponent<SpriteRenderer>().color = new Color32(120, 240, 160, 255);
 
         }
         else if (enemyId == 3)
         {
-            this.gameObject.GetComponent<SpriteRenderer>().color = new Color32(10, 160, 240, 255);
+            //this.gameObject.GetComponent<SpriteRenderer>().color = new Color32(10, 160, 240, 255);
 
         }
         else if (enemyId == 4)
         {
-            this.gameObject.GetComponent<SpriteRenderer>().color = new Color32(240, 200, 10, 255);
+            //this.gameObject.GetComponent<SpriteRenderer>().color = new Color32(240, 200, 10, 255);
 
         }
         else if (enemyId == 5)
         {
-            this.gameObject.GetComponent<SpriteRenderer>().color = new Color32(240, 120, 200, 255);
+            //this.gameObject.GetComponent<SpriteRenderer>().color = new Color32(240, 120, 200, 255);
 
         }
         else if (enemyId == 6)
         {
-            this.gameObject.GetComponent<SpriteRenderer>().color = new Color32(30, 10, 160, 255);
+            //this.gameObject.GetComponent<SpriteRenderer>().color = new Color32(30, 10, 160, 255);
 
         }
 
@@ -163,10 +163,9 @@ public class EnemyAction : MonoBehaviour
         }
 
         //ƒ_ƒ“ƒSƒ‚ƒ`‚Ì‹““®
-        Vector3 scale = transform.localScale;
         if (isEnemyLookRight == true)
         {
-            scale.x = 1;
+            transform.localScale = new Vector2(-1, transform.localScale.y);
             rb2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             for (int i = 0; i < 10; i++)
             {
@@ -175,7 +174,7 @@ public class EnemyAction : MonoBehaviour
         }
         else
         {
-            scale.x = -1;
+            transform.localScale = new Vector2(1, transform.localScale.y);
             rb2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             for (int i = 0; i < 10; i++)
             {

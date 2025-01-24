@@ -204,8 +204,6 @@ public class Player : MonoBehaviour
         //会心率バフのリフレッシュ
         attentionRateBuff = 0;
 
-
-
         //特性
         Characteristic();
 
@@ -753,7 +751,7 @@ public class Player : MonoBehaviour
         playerArrowObjectScript.Arrow(GetComponent<Player>(), charId, attackType, multipliedAttack, arrowAttribute, arrowAttentionDamage, arrowAttentionRate, arrowAttackRangeSize, arrowKnockBackValue, arrowLaunchAngle);
     }
 
-    //通常攻撃(攻撃力,属性)
+    //通常攻撃(攻撃力,属性)  //キャラごとに分けた方が良い
     private void NormalAttack(int attack, int attributeNormalAttack)
     {
         if (Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.E) == false)
@@ -765,6 +763,18 @@ public class Player : MonoBehaviour
             normalAttackPos.x += normalAttackDirection;
 
             AttackMaker(attack, attributeNormalAttack, attentionDamage, attentionRate, normalAttackPos, new Vector2(2.0f, 2.0f), 100, false);
+            //純子用(2回攻撃なのでリファクタリングすること)
+            if (charId == 5) 
+            {
+                //右向きと左向きで発生位置を変更
+                float normalAttackDirection2 = 0.75f;
+                normalAttackDirection2 *= GetFacingDirection(isLookRight);
+                Vector3 normalAttackPos2 = this.transform.position;
+                normalAttackPos.x += normalAttackDirection2;
+
+                AttackMaker(attack, attributeNormalAttack, attentionDamage, attentionRate, normalAttackPos2, new Vector2(2.0f, 2.0f), 100, false);
+
+            }
         }
     }
 
@@ -1057,7 +1067,6 @@ public class Player : MonoBehaviour
             DamageReduction(10.0f);
             timer += Time.deltaTime;
             await UniTask.Yield();  // 毎フレーム待機
-
         }
         
     }
@@ -1117,7 +1126,7 @@ public class Player : MonoBehaviour
             {
                 isChar8AttackEther = true;
             }
-            Arrow(1, (int)(attack * 1.2f), randomAttribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), new Vector2(0, 0), 10, launchAngle);
+            Arrow(1, (int)(attack * 1.4f), randomAttribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), new Vector2(0, 0), 10, launchAngle);
             await UniTask.Delay(TimeSpan.FromSeconds(0.05f));
         }
     }

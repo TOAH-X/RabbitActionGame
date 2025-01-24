@@ -55,8 +55,8 @@ MonoBehaviour:
     maxSpecialMoveEnergy: 0
     maxSpecialMoveRecharge: 7
     baseMoveSpeed: 5
-    charIcon: {fileID: 21300000, guid: 797fac409cf2c3b4db45c56c7f6a4749, type: 3}
-    charFullBodyImage: {fileID: 21300000, guid: 797fac409cf2c3b4db45c56c7f6a4749, type: 3}
+    charIcon: {fileID: 21300000, guid: 3d29ba93e642a5946a9b4cf3f02bb076, type: 3}
+    charFullBodyImage: {fileID: 21300000, guid: 56da093175d17f84bb3e6a128e64b6ee, type: 3}
   - charId: 2
     charName: "\u30B7\u30E2\u30E9"
     rarity: 5

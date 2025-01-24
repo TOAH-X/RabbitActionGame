@@ -17,13 +17,15 @@ public class Enemy : MonoBehaviour
 
     [SerializeField] Sprite enemyPicture;                       //敵の画像
 
+    [SerializeField] SpriteRenderer spriteRenderer;             //敵のスプライトレンダラー
+
     //キャラクターデータベース
     public DB_EnemyData dB_enemyData;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        spriteRenderer.sprite = enemyPicture;
     }
 
     // Update is called once per frame
@@ -37,6 +39,8 @@ public class Enemy : MonoBehaviour
     {
         enemyId = iD;
         enemyLevel = level;
+        //spriteRenderer = GetComponent<SpriteRenderer>();
+        
 
         //敵のDBの参照
         EnemyDbReference();

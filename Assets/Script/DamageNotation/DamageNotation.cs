@@ -132,6 +132,7 @@ public class DamageNotation : MonoBehaviour
         //‹•‹ó‘®«ƒ_ƒ[ƒW(—•)
         else if (attribute == 6)
         {
+            damageNotationText.outlineColor = new Color32(240, 240, 240, 255);
             damageNotationText.color = new Color32(30, 10, 160, 255);
         }
 

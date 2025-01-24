@@ -111,4 +111,11 @@ public class ChangeTeamController : MonoBehaviour
         charFullBodySprite = dB_charData.charData[charId].charFullBodyImage; //キャラ立ち絵
         return charFullBodySprite;
     }
+
+    //キャラ情報をデータベースから参照
+    public Sprite CharDbReferenceCharIcon(int charId)
+    {
+        Sprite charIconSprite = dB_charData.charData[charId].charIcon;      //キャラアイコン
+        return charIconSprite;
+    }
 }

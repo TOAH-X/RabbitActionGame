@@ -92,9 +92,9 @@ public class ChangeTeamTeamMemberController : MonoBehaviour
     //画像の差し替え
     public void ChangeIcon(int teamCharId, int charId) 
     {
-        if (teamCharId == 0) teamChar1IconObjImage.sprite = changeTeamControllerObjScript.CharDbReferenceCharFullBodyImage(charId);
-        else if (teamCharId == 1) teamChar2IconObjImage.sprite = changeTeamControllerObjScript.CharDbReferenceCharFullBodyImage(charId);
-        else if (teamCharId == 2) teamChar3IconObjImage.sprite = changeTeamControllerObjScript.CharDbReferenceCharFullBodyImage(charId);
+        if (teamCharId == 0) teamChar1IconObjImage.sprite = changeTeamControllerObjScript.CharDbReferenceCharIcon(charId);
+        else if (teamCharId == 1) teamChar2IconObjImage.sprite = changeTeamControllerObjScript.CharDbReferenceCharIcon(charId);
+        else if (teamCharId == 2) teamChar3IconObjImage.sprite = changeTeamControllerObjScript.CharDbReferenceCharIcon(charId);
     }
 
     //チームメンバー一覧から選択時
