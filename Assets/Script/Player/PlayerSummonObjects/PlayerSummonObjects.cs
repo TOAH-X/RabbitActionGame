@@ -102,8 +102,8 @@ public class PlayerSummonObjects : MonoBehaviour
         float timer = 0;
         for (int i = 0; i < 20; i++) 
         {
-            Attack((int)(summonAttack * 2.4f), this.transform.position, this.transform.localScale * 10);
-            Heal((float)summonHp * 0.05f);
+            Attack((int)(summonAttack * 1.35f), this.transform.position, this.transform.localScale * 10);
+            Heal((float)summonHp * 0.20f);
             while (timer <= 0.5f) 
             {
                 yield return null;
@@ -119,7 +119,7 @@ public class PlayerSummonObjects : MonoBehaviour
         float timer = 0;
         for (int i = 0; i < 50; i++)
         {
-            Attack((int)(summonAttack * 0.4f), this.transform.position, this.transform.localScale * 1);
+            Attack((int)(summonAttack * 0.35f), this.transform.position, this.transform.localScale * 1);
             while (timer <= 0.2f)
             {
                 yield return null;

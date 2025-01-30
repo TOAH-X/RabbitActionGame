@@ -6,6 +6,7 @@ using System;
 using UnityEditor;
 using TMPro;
 using Unity.VisualScripting;
+using DG.Tweening;
 
 public class EnemyAction : MonoBehaviour
 {
@@ -71,31 +72,14 @@ public class EnemyAction : MonoBehaviour
             //this.gameObject.GetComponent<SpriteRenderer>().color = new Color32(240, 10, 10, 255);
 
         }
-        else if (enemyId == 2)
-        {
-            //this.gameObject.GetComponent<SpriteRenderer>().color = new Color32(120, 240, 160, 255);
 
-        }
-        else if (enemyId == 3)
+        //ダンゴモチ限定登場モーション(揺れ)
+        if (enemyId >= 1 && enemyId <= 6) 
         {
-            //this.gameObject.GetComponent<SpriteRenderer>().color = new Color32(10, 160, 240, 255);
-
+            transform.DOComplete();
+            transform.DOShakeScale(1f, 1f, 30, 90f, true);      //時間、振動の強さ、振動数、ランダム度、フェードアウトするか
         }
-        else if (enemyId == 4)
-        {
-            //this.gameObject.GetComponent<SpriteRenderer>().color = new Color32(240, 200, 10, 255);
 
-        }
-        else if (enemyId == 5)
-        {
-            //this.gameObject.GetComponent<SpriteRenderer>().color = new Color32(240, 120, 200, 255);
-
-        }
-        else if (enemyId == 6)
-        {
-            //this.gameObject.GetComponent<SpriteRenderer>().color = new Color32(30, 10, 160, 255);
-
-        }
 
         //レベル表記
         //(余力があれば軽い処理に書き換えること)
@@ -162,7 +146,9 @@ public class EnemyAction : MonoBehaviour
             yield return null;
         }
 
-        //ダンゴモチの挙動
+        //ダンゴモチの挙動(ジャンプ)
+        //transform.DOComplete();
+        //transform.DOScaleX(0.5f, 1f);
         if (isEnemyLookRight == true)
         {
             transform.localScale = new Vector2(-1, transform.localScale.y);
@@ -270,9 +256,10 @@ public class EnemyAction : MonoBehaviour
             //enemyDropItemObjsrb2D.AddForce(new Vector2(0, 5.0f), ForceMode2D.Impulse);
         }
         //消滅
+        DOTween.Kill(transform);
         Destroy(enemyLevelNotation.gameObject);
         Destroy(enemyHpNotationPrefab);
-        Destroy(this.gameObject);
+        Destroy(gameObject);
     }
 
 
@@ -334,6 +321,12 @@ public class EnemyAction : MonoBehaviour
         else
         {
             rb2D.AddForce(new Vector2(-knockBackStrength, knockBackStrength), ForceMode2D.Impulse);
+        }
+        //ダンゴモチ限定登場モーション(揺れ)
+        if (enemyId >= 1 && enemyId <= 6)
+        {
+            transform.DOComplete();
+            transform.DOShakeScale(1f, 1f, 30, 90f, true);      //時間、振動の強さ、振動数、ランダム度、フェードアウトするか
         }
     }
 

@@ -16,12 +16,12 @@ MonoBehaviour:
   - enemyId: 0
     enemyName: "\u8A66\u9A13\u7528(\u30B2\u30FC\u30E0\u3067\u306F\u4F7F\u308F\u306A\u3044)"
     enemyRace: 
-    enemyAttribute: 0
+    enemyAttribute: 6
     enemyAttack: 0
     enemyAttackBaseRate: 1
     enemyMaxHp: 0
-    enemyMaxHpBaseRate: 1
-    enemyPicture: {fileID: 7482667652216324306, guid: c2e915720b92dd848bdafbd3032382c0, type: 3}
+    enemyMaxHpBaseRate: 10000
+    enemyPicture: {fileID: 21300000, guid: 06b50664e1436864ead6731bdd24199b, type: 3}
   - enemyId: 1
     enemyName: "\u708E\u30C0\u30F3\u30B4\u30E2\u30C1"
     enemyRace: "\u30C0\u30F3\u30B4\u30E2\u30C1"

@@ -1,13 +1,12 @@
 using System.Buffers.Text;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Unity.VisualScripting;
+using TMPro;
 
 public class EnemyHP : MonoBehaviour
 {
-    [SerializeField] int enemyId = 1;                           //敵のID
+    [SerializeField] int enemyId = 0;                           //敵のID
     [SerializeField] int enemyMaxHp = 100000;                   //敵の最大HP
     [SerializeField] int enemyCurrentHp = 0;                    //敵の現在HP
     [SerializeField] int enemyAttribute = 0;                    //敵の属性
@@ -35,6 +34,13 @@ public class EnemyHP : MonoBehaviour
 
     [SerializeField] float debuffedAttributeResistance = 0;     //属性耐性
 
+    [SerializeField] TextMeshProUGUI eText;            //実験用(消すこと)
+    [SerializeField] float eTimer;          //実験用タイマー
+    [SerializeField] int eTotalDamaged = 0; //累計ダメージ
+    [SerializeField] int eMaxDamage = 0;    //最大ダメージ
+    [SerializeField] int eMinDamage = 0;    //最小ダメージ
+    [SerializeField] int eAttackCount = 0;  //攻撃回数
+
     // Start is called before the first frame update
     void Start()
     {
@@ -44,6 +50,7 @@ public class EnemyHP : MonoBehaviour
 
         //ステータス参照
         enemyScript = this.gameObject.GetComponent<Enemy>();
+        enemyId = enemyScript.EnemyId;
         enemyAttribute = enemyScript.EnemyAttribute;
         enemyMaxHp = enemyScript.EnemyMaxHp;
 
@@ -55,11 +62,30 @@ public class EnemyHP : MonoBehaviour
         //プレイヤーを見つける(余力があれば軽い処理に書き換えること)
         playerObj = GameObject.Find("Player");
         playerScript = playerObj.gameObject.GetComponent<Player>();
+
+        //実験用なので消すこと
+        if (enemyId == 0)
+        {
+            transform.localScale = new Vector3(2, 2);
+            eText = GameObject.Find("eTestInformation").GetComponent<TextMeshProUGUI>();
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (enemyId == 0)  
+        {
+            //移動
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                enemyActionScript.EnemyDeath(-1);
+            }
+            if (enemyCurrentHp < 0) enemyCurrentHp = 0;
+            eText.text = "残りHP:" + enemyCurrentHp + "\n経過時間:" + eTimer.ToString("F2") + "\n累積ダメージ:" + eTotalDamaged + "\n最大ダメージ:" + eMaxDamage + "\n最小ダメージ:" + eMinDamage + "\n攻撃回数:" + eAttackCount + "\nDPS:" + (eTotalDamaged / eTimer).ToString("F0");
+            eTimer += Time.deltaTime;
+        }
+
         //自身のHPがマイナスになったとき
         if (enemyCurrentHp < 0)
         {
@@ -98,6 +124,21 @@ public class EnemyHP : MonoBehaviour
         //属性倍率判定、仮置き(敵味方共通のスクリプトを作ること)
         //damage = AttributeCalculator(damage, attribute);
         enemyCurrentHp -= damage;
+
+        //実験用なので消すこと
+        if (enemyId == 0) 
+        {
+            eTotalDamaged += damage;
+            if (eMaxDamage < damage) 
+            {
+                eMaxDamage = damage;
+            }
+            if (eMinDamage > damage || eMinDamage == 0) 
+            {
+                eMinDamage = damage;
+            }
+            eAttackCount++;
+        }
 
         //ダメージ表記呼び出し
         var damageNotationObjs = Instantiate<GameObject>(damageNotationObj, transform.position, Quaternion.identity, canvasTransform);
