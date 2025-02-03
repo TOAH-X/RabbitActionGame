@@ -16,7 +16,7 @@ MonoBehaviour:
   - enemyId: 0
     enemyName: "\u8A66\u9A13\u7528(\u30B2\u30FC\u30E0\u3067\u306F\u4F7F\u308F\u306A\u3044)"
     enemyRace: 
-    enemyAttribute: 6
+    enemyAttribute: 0
     enemyAttack: 0
     enemyAttackBaseRate: 1
     enemyMaxHp: 0
