@@ -929,7 +929,7 @@ public class Player : MonoBehaviour
 
         rb2D.bodyType = RigidbodyType2D.Dynamic;
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++) 
         {
             AttackMaker((int)(attack * 1.5f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(15.0f, 7.5f), 10, false);
 
