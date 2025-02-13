@@ -854,12 +854,12 @@ public class Player : MonoBehaviour
         {
             if (i <= 1)
             {
-                AttackMaker((int)(attack * 3.2f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(12.5f, 12.5f), 120, false);
+                AttackMaker((int)(attack * 4.2f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(12.5f, 12.5f), 120, false);
                 await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
             }
             else
             {
-                AttackMaker((int)(attack * 1.1f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(12.5f, 12.5f), 40, false);
+                AttackMaker((int)(attack * 1.4f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(12.5f, 12.5f), 40, false);
             }
             //Žc‘œ‚Ì¶¬(GetComponent‚ð‚È‚ñ‚Æ‚©‚·‚é)
             Vector3 afterimagePos = Vector3.zero;
@@ -1069,7 +1069,7 @@ public class Player : MonoBehaviour
         float launchAngle = GetFacingDirection(isLookRight) * -90;
         for (int i = 0; i < 9; i++) 
         {
-            Arrow(i + 1, (int)(attack * 1.40f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), new Vector2(0, 0), 10, launchAngle);
+            Arrow(i + 1, (int)(attack * 1.70f), attribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), new Vector2(0, 0), 10, launchAngle);
         }
     }
 
@@ -1147,7 +1147,7 @@ public class Player : MonoBehaviour
             {
                 isChar8AttackEther = true;
             }
-            Arrow(1, (int)(attack * 1.35f), randomAttribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), new Vector2(0, 0), 10, launchAngle);
+            Arrow(1, (int)(attack * 0.65f), randomAttribute, attentionDamage, attentionRate, this.transform.position, new Vector2(0.2f, 0.2f), new Vector2(0, 0), 10, launchAngle);
             await UniTask.Delay(TimeSpan.FromSeconds(0.05f));
         }
     }
